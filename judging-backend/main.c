@@ -10,6 +10,7 @@
 #include <sys/mman.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <sys/ptrace.h>
 
 #define AC 0
 #define WA 1
@@ -155,10 +156,10 @@ int main(int argc, char *argv[]) {
 			// child process
 			struct rlimit rlim;
 			rlim.rlim_cur = time_limit;
-			rlim.rlim_max = time_limit * 2;
+			rlim.rlim_max = 10;
 			setrlimit(RLIMIT_CPU, &rlim);
 			rlim.rlim_cur = memory_limit * 1048576;
-			rlim.rlim_max = min(2147483648, (long long)memory_limit * 4194304ll);
+			rlim.rlim_max = 1073741824;
 			setrlimit(RLIMIT_AS, &rlim);
 			freopen(input_files[i], "r", stdin);
 			freopen("output.txt", "w", stdout);
@@ -191,9 +192,8 @@ int main(int argc, char *argv[]) {
 				struct rusage usage;
 				getrusage(RUSAGE_CHILDREN, &usage);
 				if (WTERMSIG(status) == SIGXCPU || (WTERMSIG(status) == SIGKILL && (usage.ru_utime.tv_sec - prev_usage.ru_utime.tv_sec) * 1000 + (usage.ru_utime.tv_usec - prev_usage.ru_utime.tv_usec) / 1000 > time_limit)) {
-					// rlimit kills the process if the time limit is exceeded for some reason
 					return TLE;
-				} else if (WTERMSIG(status) == SIGXFSZ || (WTERMSIG(status) == SIGSEGV && usage.ru_maxrss > memory_limit * 1024)) {
+				} else if (WTERMSIG(status) == SIGXFSZ || (WTERMSIG(status) == SIGSEGV && usage.ru_maxrss > memory_limit)) {
 					return MLE;
 				} else if (WTERMSIG(status) == SIGSEGV) {
 					return RTE | SEGV;
@@ -215,6 +215,7 @@ int main(int argc, char *argv[]) {
 
 	remove("output.txt");
 	remove("a.out");
+	remove(argv[3]);
 	
 	return AC;
 }
