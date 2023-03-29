@@ -4,6 +4,7 @@
 #include <sys/wait.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <sys/stat.h>
 #include <signal.h>
 #include <string.h>
 #include <sys/mman.h>
@@ -28,7 +29,7 @@ char *input_files[128], *output_files[128];
 char *cleanse_string(char *str) {
 	// remove trailing whitespaces and newlines
 	int len = strlen(str);
-	char *ret = (char *)calloc(len + 1, sizeof(char));
+	char *ret = (char *)malloc((len + 1) * sizeof(char));
 	strcpy(ret, str);
 	while (len > 0 && (ret[len-1] == ' ' || ret[len-1] == '\n')) {
 		ret[len-1] = '\0';
@@ -41,13 +42,17 @@ char *cleanse_string(char *str) {
 	return ret;
 }
 
+long long min(long long a, long long b) {
+	return a < b ? a : b;
+}
+
 int main(int argc, char *argv[]) {
-	// argv[1] is the path to the init file
+	// argv[1] is the path to the meta file
 	// argv[2] is the language that the program is written in
 	// argv[3] is the path to the code
 	// argv[4] is the directory of the problem
 	if (argc != 5) {
-		printf("Usage: %s init_file language code_dir problem_dir", argv[0]);
+		printf("Usage: %s meta_file language code_dir problem_dir", argv[0]);
 		return IE;
 	}
 
@@ -95,7 +100,25 @@ int main(int argc, char *argv[]) {
 		} else {
 			return IE;
 		}
-	} // maybe implement pypy
+	} else if (strncmp(argv[2], "py", 3) == 0) {
+		rename(argv[3], "a.out");
+		// prepend #!/usr/bin/env pypy3
+		FILE *f = fopen("a.out", "r+");
+		if (f == NULL) {
+			return IE;
+		}
+
+		char *buf = (char *)malloc(65536 * sizeof(char));
+		fread(buf, 1, 65536, f);
+		fseek(f, 0, SEEK_SET);
+		fprintf(f, "#!/usr/bin/env pypy3\n");
+		fwrite(buf, 1, strlen(buf), f);
+		fclose(f);
+
+		if (chmod("a.out", 0755)) {
+			return IE;
+		}
+	}
 	else {
 		return IE;
 	}
@@ -106,7 +129,8 @@ int main(int argc, char *argv[]) {
 	}
 
 	int time_limit, memory_limit; // time limit in seconds, memory limit in MB
-	if (fscanf(init, "%d %d", &time_limit, &memory_limit) != 2) {
+	int star_rating; // not used
+	if (fscanf(init, "%d %d %d", &time_limit, &memory_limit, &star_rating) != 3) {
 		return IE;
 	}
 
@@ -133,8 +157,8 @@ int main(int argc, char *argv[]) {
 			rlim.rlim_cur = time_limit;
 			rlim.rlim_max = time_limit * 2;
 			setrlimit(RLIMIT_CPU, &rlim);
-			rlim.rlim_cur = memory_limit * 1024 * 1024;
-			rlim.rlim_max = memory_limit * 1024 * 1024 * 2;
+			rlim.rlim_cur = memory_limit * 1048576;
+			rlim.rlim_max = min(2147483648, (long long)memory_limit * 4194304ll);
 			setrlimit(RLIMIT_AS, &rlim);
 			freopen(input_files[i], "r", stdin);
 			freopen("output.txt", "w", stdout);
