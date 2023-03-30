@@ -22,7 +22,7 @@ export default () => {
 
 				<div className="pt-[3rem]">
 					{/*everything goes in here*/}
-					<h1 className="text-blue-0 pb-[50rem]">PZOJ</h1>
+					<h1 className="text-blue-0 pb-[50rem]">Learn</h1>
 				</div>
 			</main>
 		</>

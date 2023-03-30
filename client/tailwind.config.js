@@ -14,6 +14,12 @@ module.exports = {
 				"dark-2": "var(--dark-2)",
 				border: "var(--border)",
 			},
+
+			keyframes: {
+				underline: {
+					"0%": {},
+				},
+			},
 		},
 	},
 	plugins: [],
