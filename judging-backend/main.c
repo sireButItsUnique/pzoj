@@ -3,7 +3,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/time.h>
-#include <sys/resource.h>
 #include <sys/stat.h>
 #include <signal.h>
 #include <string.h>
@@ -11,6 +10,12 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/ptrace.h>
+#include <sys/resource.h>
+#include <sys/user.h>
+#include <sys/reg.h>
+#include <signal.h>
+
+#include "syscalls.h"
 
 #define AC 0
 #define WA 1
@@ -24,6 +29,7 @@
 #define SEGV 16
 #define FPE 32
 #define ABRT 64
+#define DIS_SYS 128
 
 char *input_files[128], *output_files[128];
 
@@ -58,6 +64,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (chdir(argv[4])) {
+		printf("failed to chdir\n");
 		return IE;
 	}
 
@@ -76,9 +83,11 @@ int main(int argc, char *argv[]) {
 					return CE;
 				}
 			} else {
+				printf("compiler terminated abnormally\n");
 				return IE;
 			}
 		} else {
+			printf("fork failed\n");
 			return IE;
 		}
 	} else if (strncmp(argv[2], "c", 2) == 0) {
@@ -96,9 +105,11 @@ int main(int argc, char *argv[]) {
 					return CE;
 				}
 			} else {
+				printf("compiler terminated abnormally\n");
 				return IE;
 			}
 		} else {
+			printf("fork failed\n");
 			return IE;
 		}
 	} else if (strncmp(argv[2], "py", 3) == 0) {
@@ -106,6 +117,7 @@ int main(int argc, char *argv[]) {
 		// prepend #!/usr/bin/env pypy3
 		FILE *f = fopen("a.out", "r+");
 		if (f == NULL) {
+			printf("failed to open file handle a.out\n");
 			return IE;
 		}
 
@@ -117,21 +129,25 @@ int main(int argc, char *argv[]) {
 		fclose(f);
 
 		if (chmod("a.out", 0755)) {
+			printf("failed to chmod a.out\n");
 			return IE;
 		}
 	}
 	else {
+		printf("unknown language\n");
 		return IE;
 	}
 
 	FILE *init = fopen(argv[1], "r");
 	if (init == NULL) {
+		printf("failed to open init file\n");
 		return IE;
 	}
 
 	int time_limit, memory_limit; // time limit in seconds, memory limit in MB
 	int star_rating; // not used
 	if (fscanf(init, "%d %d %d", &time_limit, &memory_limit, &star_rating) != 3) {
+		printf("failed to read init file\n");
 		return IE;
 	}
 
@@ -147,75 +163,144 @@ int main(int argc, char *argv[]) {
 		numcases++;
 	}
 
-	struct rusage prev_usage;
+	fclose(init);
+
+	// goal: run the program and compare the output to the expected output
+	// while also checking for time limit and memory limit
+	// if the program is killed by a signal, return the proper verdict (RTE | SEGV | FPE | ABRT)
+	// use ptrace to monitor syscalls and memory usage
+	// if the prorgam tries to use a disallowed syscall, return RTE | DIS_SYS
+
+	struct rusage prev_use;
 
 	for (int i = 0; i < numcases; i++) {
-		getrusage(RUSAGE_CHILDREN, &prev_usage);
+		getrusage(RUSAGE_CHILDREN, &prev_use);
 		pid_t pid = fork();
 		if (pid == 0) {
-			// child process
+			// child
+			freopen(input_files[i], "r", stdin);
+			freopen("output.txt", "w", stdout);
+
 			struct rlimit rlim;
 			rlim.rlim_cur = time_limit;
 			rlim.rlim_max = 10;
-			setrlimit(RLIMIT_CPU, &rlim);
-			rlim.rlim_cur = memory_limit * 1048576;
-			rlim.rlim_max = 1073741824;
-			setrlimit(RLIMIT_AS, &rlim);
-			freopen(input_files[i], "r", stdin);
-			freopen("output.txt", "w", stdout);
+			if (setrlimit(RLIMIT_CPU, &rlim)) {
+				printf("failed to set time limit\n");
+				return IE;
+			}
+			
+			rlim.rlim_cur = memory_limit * 1024 * 1024;
+			rlim.rlim_max = 1024 * 1024 * 1024; // 1 GB
+			if (setrlimit(RLIMIT_AS, &rlim)) {
+				printf("failed to set memory limit\n");
+				return IE;
+			}
+
+			ptrace(PTRACE_TRACEME, 0, NULL, NULL);
 			execl("./a.out", "./a.out", NULL);
 		} else if (pid > 0) {
-			// parent process
-			int status;
-			waitpid(pid, &status, 0);
-			if (WIFEXITED(status)) {
-				if (WEXITSTATUS(status) == 0) {
-					char *ptr_1 = mmap(0, 0x1000, PROT_READ, MAP_PRIVATE, fileno(fopen("output.txt", "r")), 0);
-					char *ptr_2 = mmap(0, 0x1000, PROT_READ, MAP_PRIVATE, fileno(fopen(output_files[i], "r")), 0);
-					ptr_1 = cleanse_string(ptr_1);
-					ptr_2 = cleanse_string(ptr_2);
-					if (strcmp(ptr_1, ptr_2) != 0) {
+			// parent
+			while (1) {
+				int status;
+				waitpid(pid, &status, 0);
+				if (WIFEXITED(status)) {
+					if (WEXITSTATUS(status) != 0) {
+						return IR;
+					}
+					// check output
+					char *ptr1 = mmap(0, 0x1000, PROT_READ, MAP_PRIVATE, fileno(fopen("output.txt", "r")), 0);
+					char *ptr2 = mmap(0, 0x1000, PROT_READ, MAP_PRIVATE, fileno(fopen(output_files[i], "r")), 0);
+					ptr1 = cleanse_string(ptr1);
+					ptr2 = cleanse_string(ptr2);
+					if (strcmp(ptr1, ptr2) != 0) {
 						return WA;
 					}
-					munmap(ptr_1, 0x1000);
-					munmap(ptr_2, 0x1000);
+
+					munmap(ptr1, 0x1000);
+					munmap(ptr2, 0x1000);
 
 					struct rusage usage;
 					getrusage(RUSAGE_CHILDREN, &usage);
-					printf("AC %ld %ld\n", (usage.ru_utime.tv_sec - prev_usage.ru_utime.tv_sec) * 1000 + (usage.ru_utime.tv_usec - prev_usage.ru_utime.tv_usec) / 1000, usage.ru_maxrss);
-				} else if (WEXITSTATUS(status) == ENOMEM) {
-					return MLE;
+					printf("%ld\n", (usage.ru_utime.tv_sec - prev_use.ru_utime.tv_sec) * 1000 + (usage.ru_utime.tv_usec - prev_use.ru_utime.tv_usec) / 1000);
+					break;
+				} else if (WIFSIGNALED(status)) {
+					int sig = WTERMSIG(status);
+					if (sig == SIGXCPU) {
+						return TLE;
+					} else if (sig == SIGSEGV) {
+						return RTE | SEGV;
+					} else if (sig == SIGFPE) {
+						return RTE | FPE;
+					} else if (sig == SIGABRT) {
+						return RTE | ABRT;
+					} else {
+						printf("signal %d\n", sig);
+						return RTE;
+					}
+				} else if (WIFSTOPPED(status)) {
+					int sig = WSTOPSIG(status);
+					if (sig == SIGTRAP) {
+						long long rax = ptrace(PTRACE_PEEKUSER, pid, 8 * ORIG_RAX, NULL);
+						if (rax == 231) {
+							// exit
+							// look for memory usage in /proc/pid/status
+							char path[32];
+							sprintf(path, "/proc/%d/status", pid);
+							FILE *f = fopen(path, "r");
+							if (f == NULL) {
+								printf("failed to open /proc/pid/status\n");
+								return IE;
+							}
+
+							char buf[512];
+							while (fgets(buf, 512, f)) {
+								if (strncmp(buf, "VmRSS:", 6) == 0) {
+									int mem;
+									if (sscanf(buf, "VmRSS: %d kB ", &mem) != 1) {
+										printf("failed to read memory usage\n");
+										return IE;
+									}
+									if (mem > memory_limit * 1024) {
+										return MLE;
+									}
+									printf("%d ", mem);
+									break;
+								}
+							}
+							fclose(f);
+						}
+						if (syscall_allowed(rax)) {
+							ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
+						} else {
+							printf("disallowed syscall %lld\n", rax);
+							kill(pid, SIGKILL);
+							return RTE | DIS_SYS;
+						}
+					} else {
+						int sig = WTERMSIG(status);
+						if (sig == SIGXCPU) {
+							return TLE;
+						} else if (sig == SIGSEGV) {
+							return RTE | SEGV;
+						} else if (sig == SIGFPE) {
+							return RTE | FPE;
+						} else if (sig == SIGABRT) {
+							return RTE | ABRT;
+						} else {
+							printf("signal %d\n", sig);
+							return RTE;
+						}
+					}
 				} else {
-					return IR;
-				}
-			} else if (WIFSIGNALED(status)) {
-				struct rusage usage;
-				getrusage(RUSAGE_CHILDREN, &usage);
-				if (WTERMSIG(status) == SIGXCPU || (WTERMSIG(status) == SIGKILL && (usage.ru_utime.tv_sec - prev_usage.ru_utime.tv_sec) * 1000 + (usage.ru_utime.tv_usec - prev_usage.ru_utime.tv_usec) / 1000 > time_limit)) {
-					return TLE;
-				} else if (WTERMSIG(status) == SIGXFSZ || (WTERMSIG(status) == SIGSEGV && usage.ru_maxrss > memory_limit)) {
-					return MLE;
-				} else if (WTERMSIG(status) == SIGSEGV) {
-					return RTE | SEGV;
-				} else if (WTERMSIG(status) == SIGFPE) {
-					return RTE | FPE;
-				} else if (WTERMSIG(status) == SIGABRT) {
-					return RTE | ABRT;
-				} else {
-					printf("%d\n", WTERMSIG(status));
+					printf("program terminated abnormally\n");
 					return RTE;
 				}
-			} else {
-				return RTE;
 			}
 		} else {
+			printf("fork failed\n");
 			return IE;
 		}
 	}
-
-	remove("output.txt");
-	remove("a.out");
-	remove(argv[3]);
 	
 	return AC;
 }

@@ -1,2 +1,7 @@
 *.out
 .vscode/
+
+test/
+init.txt
+judge
+output.txt

@@ -24,3 +24,5 @@
 	- (time_limit (s)) (memory_limit (MB)) (star_rating (1-10))
 	- (input_file) (output_file)
 	...
+
+- web backend MUST remove code_file, output.txt, and a.out after judging
