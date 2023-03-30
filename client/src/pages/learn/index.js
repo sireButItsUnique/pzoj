@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Navbar from "@/components/Navbar";
 import CourseBlob from "@/components/CourseBlob";
+import CoursePanel from "@/components/CoursePanel";
 import { useState } from "react";
 
 export default () => {
@@ -47,6 +48,8 @@ export default () => {
 							code={course.code}
 						/>
 					))}
+
+					<CoursePanel />
 				</div>
 			</main>
 		</>
