@@ -7,6 +7,7 @@
     --blue-1: #0098f7;
     --white-0: #ffffff;
     --grey-0: #aeacac;
+    --grey-1: #bac0cb;
     --dark-0: #111d25;
     --dark-1: #1c2830;
     --dark-2: #202c34;
@@ -18,4 +19,10 @@
 	padding: 0;
 	margin: 0;
 	font-size: 1rem;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+    background-color: var(--dark-0);
 }
