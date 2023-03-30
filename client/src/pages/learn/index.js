@@ -1,7 +1,17 @@
 import Head from "next/head";
 import Navbar from "@/components/Navbar";
+import CourseBlob from "@/components/CourseBlob";
+import { useState } from "react";
 
 export default () => {
+	const [courses, setCourses] = useState([
+		{ title: "text", cover: "/pzoj.png", code: "/learn/asdada" },
+		{ title: "text", cover: "/pzoj.png", code: "/learn/asdada" },
+		{ title: "text", cover: "/pzoj.png", code: "/learn/asdada" },
+		{ title: "text", cover: "/pzoj.png", code: "/learn/asdada" },
+		{ title: "text", cover: "/pzoj.png", code: "/learn/asdada" },
+	]);
+
 	return (
 		<>
 			<Head>
@@ -20,9 +30,23 @@ export default () => {
 					]}
 				/>
 
-				<div className="pt-[3rem]">
-					{/*everything goes in here*/}
-					<h1 className="text-blue-0 pb-[50rem]">Learn</h1>
+				<div className="pt-[4rem]">
+					{courses.map((course) => (
+						<CourseBlob
+							key={Math.random()}
+							title={course.title}
+							cover={course.cover}
+							code={course.code}
+						/>
+					))}
+					{courses.map((course) => (
+						<CourseBlob
+							key={Math.random()}
+							title={course.title}
+							cover={course.cover}
+							code={course.code}
+						/>
+					))}
 				</div>
 			</main>
 		</>

@@ -20,7 +20,7 @@ export default () => {
 					]}
 				/>
 
-				<div className="pt-[3rem]">
+				<div className="pt-[4rem]">
 					{/*everything goes in here*/}
 					<h1 className="text-blue-0 pb-[50rem]">Problems</h1>
 				</div>
