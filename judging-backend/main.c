@@ -36,7 +36,7 @@ char *input_files[128], *output_files[128];
 char *cleanse_string(char *str) {
 	// remove trailing whitespaces and newlines
 	int len = strlen(str);
-	char *ret = (char *)malloc((len + 1) * sizeof(char));
+	char *ret = malloc((len + 1));
 	strcpy(ret, str);
 	while (len > 0 && (ret[len-1] == ' ' || ret[len-1] == '\n')) {
 		ret[len-1] = '\0';
@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
 			return IE;
 		}
 
-		char *buf = (char *)malloc(65536 * sizeof(char));
+		char *buf = malloc(65536);
 		fread(buf, 1, 65536, f);
 		fseek(f, 0, SEEK_SET);
 		fprintf(f, "#!/usr/bin/env pypy3\n");
