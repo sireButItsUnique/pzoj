@@ -5,3 +5,12 @@ test/
 init.txt
 judge
 output.txt
+
+*/node_modules/
+*/.next/
+client/build/
+*/.vercel
+*/npm-debug.log*
+*/yarn-debug.log*
+*/yarn-error.log*
+*/.pnpm-debug.log*
