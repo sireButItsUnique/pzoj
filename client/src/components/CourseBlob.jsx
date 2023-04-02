@@ -12,7 +12,7 @@ const CourseBlob = (props) => {
             <Image className="rounded" src={props.cover} width={100} height={100} style={{objectFit: 'scale-down'}}/>
             
             <button 
-                className={`absolute right-4 ${spin && "animate-spin"} bg-white`} 
+                className={`absolute right-4 ${spin && "animate-spin"}`} 
                 onClick={() => {
                     setExpanded(!expanded);
                     setSpin(true);
