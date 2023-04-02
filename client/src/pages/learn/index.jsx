@@ -18,7 +18,7 @@ export default () => {
 		<>
 			<Head>
 				<title>PZOJ</title>
-				<link rel="icon" href="/favicon.png" />
+				<link rel="icon" href="/images/favicon.png" />
 			</Head>
 
 			<main className="bg-dark-0">
@@ -32,8 +32,9 @@ export default () => {
 					]}
 				/>
 
-				<div className="pt-[4rem]">
-                    <p1 className="text-grey-2 font-bold text-3xl ml-[12rem]">Your Courses</p1>
+				<div className="mt-[4rem] pb-[4rem]">
+                    <div className="py-[1.8rem] px-[1rem]"/>
+                    <p1 className="text-grey-2 mt-[5rem] font-bold text-3xl ml-[12rem]">Your Courses</p1>
 
 					{courses.map((course) => (
 						<CourseBlob

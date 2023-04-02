@@ -18,7 +18,7 @@ const CourseBlob = (props) => {
                     setSpin(true);
                     setTimeout(() => {
                         setSpin(false);
-                    }, 180)
+                    }, 280)
                 }
             }>
 
@@ -33,7 +33,7 @@ const CourseBlob = (props) => {
                     setSpin(true);
                     setTimeout(() => {
                         setSpin(false);
-                    }, 180)
+                    }, 280)
                 }
             }></button>}         
             

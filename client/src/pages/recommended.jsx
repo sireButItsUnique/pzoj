@@ -6,7 +6,7 @@ export default () => {
 		<>
 			<Head>
 				<title>PZOJ</title>
-				<link rel="icon" href="/favicon.png" />
+				<link rel="icon" href="/images/favicon.png" />
 			</Head>
 
 			<main className="bg-dark-0">
