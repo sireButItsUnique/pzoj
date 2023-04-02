@@ -7,14 +7,12 @@ const Navbar = (props) => {
 		<nav className="z-[99] fixed right-0 left-0 top-0 border-b-[1px] border-dark-2">
 			<div className="relative w-full bg-dark-2 px-10 py-4 flex justify-start items-center">
 				<div className="logo">
-					<Link href="/">
-						<Image src="/images/pzoj.png" width="35" height="35" />
-					</Link>
+					<Image src="/images/pzoj.png" width="35" height="35" />
 				</div>
 
 				{props.links.map((link, idx) => (
 					<Link
-						className="text-grey-1 pl-6 transition duration-200 ease-in-out hover:text-white hover:underline-offset-[1.2rem] hover:underline"
+						className="text-grey-1 pl-8 transition duration-200 ease-in-out hover:text-white hover:underline-offset-[1.2rem] hover:underline"
 						href={link.url}
 						key={idx}
 					>
