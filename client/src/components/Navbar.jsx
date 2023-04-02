@@ -1,26 +1,41 @@
 import Link from "next/link";
+import Image from "next/image";
+import Button from "./Button";
 
 const Navbar = (props) => {
-  return (
-    <nav className="z-[99] fixed right-0 left-0 bg-dark-2 py-4 align-middle">
-      {props.links.map((link, idx) => (
-        <Link
-          className="text-grey-1 px-6 transition duration-[400ms] ease-in-out hover:text-white hover:underline-offset-[1.2rem] hover:underline"
-          href={link.url}
-          key={idx}
-        >
-          {link.text}
-        </Link>
-      ))}
+	return (
+		<nav className="z-[99] fixed right-0 left-0 top-0 border-b-[1px] border-dark-2">
+			<div className="relative w-full bg-dark-2 px-10 py-4 flex justify-start items-center">
+				<div className="logo">
+					<Link href="/">
+						<Image src="/images/pzoj.png" width="35" height="35" />
+					</Link>
+				</div>
 
-      <Link
-        className="text-blue-0 right-0 fixed px-6 transition duration-[400ms] ease-in-out hover:text-blue-1 hover:underline-offset-[1.2rem] hover:underline"
-        href="/login"
-      >
-        Sign In
-      </Link>
-    </nav>
-  );
+				{props.links.map((link, idx) => (
+					<Link
+						className="text-grey-1 pl-6 transition duration-200 ease-in-out hover:text-white hover:underline-offset-[1.2rem] hover:underline"
+						href={link.url}
+						key={idx}
+					>
+						{link.text}
+					</Link>
+				))}
+
+				<div className="absolute right-10">
+					<Button
+						text="Login"
+						link="/login"
+						bgColor="transparent"
+						textColor="blue-1"
+						borderColor="blue-1"
+						hoverTextColor="dark-2"
+						hoverFill={true}
+					/>
+				</div>
+			</div>
+		</nav>
+	);
 };
 
 export default Navbar;

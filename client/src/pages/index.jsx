@@ -15,7 +15,6 @@ export default () => {
         <Navbar
           className=""
           links={[
-            { text: "Home", url: "/" },
             { text: "Problems", url: "/problems" },
             { text: "Learn", url: "/learn" },
             { text: "Recommended", url: "/recommended" },
