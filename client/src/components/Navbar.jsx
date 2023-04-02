@@ -4,7 +4,7 @@ import Button from "./Button";
 
 const Navbar = (props) => {
 	return (
-		<nav className="z-[99] fixed right-0 left-0 top-0 border-b-[1px] border-dark-2">
+		<nav className="z-[99] fixed right-0 left-0 top-0 border-b border-border">
 			<div className="relative w-full bg-dark-2 px-10 py-4 flex justify-start items-center">
 				<div className="logo">
 					<Image src="/images/pzoj.png" width="35" height="35" />

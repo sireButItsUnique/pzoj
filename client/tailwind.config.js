@@ -14,6 +14,8 @@ module.exports = {
 				"dark-1": "#1c2830",
 				"dark-2": "#202c34",
 				"dark-3": "#2b3a44",
+				"gradient-start": "#34d399",
+				"gradient-end": "#0ea5e9",
 				border: "#ffffff0d",
 			},
 			keyframes: {
