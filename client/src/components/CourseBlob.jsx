@@ -12,7 +12,7 @@ const CourseBlob = (props) => {
             <Image className="rounded" src={props.cover} width={100} height={100} style={{objectFit: 'scale-down'}}/>
             
             <button 
-                className={`absolute right-4 ${spin && "animate-spin"}`} 
+                className={`absolute right-4 ${spin && "animate-spin"} bg-white`} 
                 onClick={() => {
                     setExpanded(!expanded);
                     setSpin(true);
@@ -25,7 +25,17 @@ const CourseBlob = (props) => {
                 <Image src="/images/settings.png" width={24} height={24} />
             </button>
 
-            {expanded && <CourseOptions />}            
+            {expanded && <CourseOptions />}   
+            {expanded && <button 
+                className={`fixed left-0 top-0 z-[9] pb-[100vh] pr-[100vw]`} 
+                onClick={() => {
+                    setExpanded(!expanded);
+                    setSpin(true);
+                    setTimeout(() => {
+                        setSpin(false);
+                    }, 180)
+                }
+            }></button>}         
             
             <div className="flex-col ml-[1rem]">
                 <Link className="text-grey-1 font-semibold text-lg hover:underline hover:text-grey-2" href={props.courseId}>{props.title}</Link>

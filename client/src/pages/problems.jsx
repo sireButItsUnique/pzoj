@@ -12,6 +12,7 @@ export default () => {
       <main className="bg-dark-0">
         <Navbar
           links={[
+            { text: "Home", url: "/" },
             { text: "Problems", url: "/problems" },
             { text: "Learn", url: "/learn" },
             { text: "Recommended", url: "/recommended" },
