@@ -2,10 +2,10 @@ import Head from "next/head";
 import Navbar from "@/components/Navbar";
 import CourseBlob from "@/components/CourseBlob";
 import CoursePanel from "@/components/CoursePanel";
+import Image from "next/image";
 import { useState } from "react";
 
 export default () => {
-    //<a href="https://imgbb.com/"><img src="" alt="Screenshot-1213" border="0" /></a>
 	const [courses, setCourses] = useState([
 		{ title: "Dynamic Programming", cover: "https://i.ibb.co/QbFMzcd/Screenshot-1213.png", courseId: "/learn/dQw4w9WgXcQ", description: "Dynamic programming is both a mathematical optimization method and a computer programming method. The method was developed by Richard Bellman in the 1950s and has found applications in numerous fields, from aerospace engineering to economics."},
 		{ title: "text", cover: "/images/pzoj.png", courseId: "/learn/asdada", description: "this is a test course, not indicative of final product"},
@@ -32,7 +32,7 @@ export default () => {
 					]}
 				/>
 
-				<div className="mt-[4rem] pb-[4rem]">
+				<div className="mt-[4rem] pb-[4rem] flex-col">
                     <div className="py-[1.8rem] px-[1rem]"/>
                     <p1 className="text-grey-2 mt-[5rem] font-bold text-3xl ml-[12rem]">Your Courses</p1>
 
@@ -43,8 +43,16 @@ export default () => {
 							cover={course.cover}
                             description={course.description}
 							courseId={course.courseId}
+                            setCourses={setCourses}
+                            courses={courses}
 						/>
 					))}
+
+                    <br />
+                    {!courses.length && <p1 className="ml-[12rem] text-grey-0">Uh oh! Looks like you have no courses. Try adding a course from the side panel.</p1>}
+                    {!courses.length && <div className="absolute top-[30%] left-[22%]"> 
+                        <Image src="/images/potato-sad.png" width={350} height={350}/> {/*this is temp img unless u guys wanna keep it*/}    
+                    </div>}
 
 					<CoursePanel />
 				</div>

@@ -25,7 +25,7 @@ const CourseBlob = (props) => {
                 <Image src="/images/settings.png" width={24} height={24} />
             </button>
 
-            {expanded && <CourseOptions />}   
+            {expanded && <CourseOptions courses={props.courses} setCourses={props.setCourses} courseId={props.courseId}/>}   
             {expanded && <button 
                 className={`fixed left-0 top-0 z-[9] pb-[100vh] pr-[100vw]`} 
                 onClick={() => {
