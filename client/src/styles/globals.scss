@@ -12,8 +12,8 @@ $dark-0: #111d25;
 $dark-1: #1c2830;
 $dark-2: #202c34;
 $dark-3: #2b3a44;
-$gradient-start: #34d399;
-$gradient-end: #0ea5e9;
+$gradient-start: #00c6ff;
+$gradient-end: #0072ff;
 $border: #ffffff0d;
 
 * {
@@ -33,9 +33,9 @@ body {
     &::-webkit-scrollbar {
         width: 0.5rem;
     }
-    
+
     &::-webkit-scrollbar-track {
-        background-color: $dark-2;
+        background-color: rgba($dark-2, 0.4);
         border-left: 1px solid $border;
     }
 

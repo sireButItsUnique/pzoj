@@ -12,7 +12,7 @@ const Navbar = (props) => {
 
 				{props.links.map((link, idx) => (
 					<Link
-						className="text-grey-1 pl-8 transition duration-200 ease-in-out hover:text-white hover:underline-offset-[1.2rem] hover:underline"
+						className="text-grey-1 pl-10 transition duration-200 ease-in-out hover:text-white"
 						href={link.url}
 						key={idx}
 					>
