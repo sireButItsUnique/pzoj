@@ -12,6 +12,7 @@ export default () => {
 		{ title: "text", cover: "/images/pzoj.png", courseId: "/learn/asdada", description: "this is a test course, not indicative of final product" },
 		{ title: "text", cover: "/images/pzoj.png", courseId: "/learn/asdada", description: "this is a test course, not indicative of final product" },
 		{ title: "text", cover: "/images/pzoj.png", courseId: "/learn/asdada", description: "this is a test course, not indicative of final product" },
+        { title: "Hutao", cover: "/images/pzoj.png", courseId: "/learn/wocaonima", description: "hutao is NOT a loli. i repeat, shes NOT a loli" },
 	]);
 
 	return (

@@ -22,7 +22,13 @@ const CourseOptions = (props) => {
                 <p1 className="ml-[0.5rem] text-[#ab1432]">Delete</p1>
             </button>
 
-            <button className="flex hover:bg-dark-2 pl-[0.5rem] pr-[1rem] pb-[0.25rem] pt-[0.25rem]">
+            <button 
+                className="flex hover:bg-dark-2 pl-[0.5rem] pr-[1rem] pb-[0.25rem] pt-[0.25rem]"
+                onClick={() => {
+                    props.setCompleted(!props.completed);
+                    props.setExpanded(false);
+                }}   
+            >
                 <Image src="/images/mark.png" width={24} height={24}/>
                 <p1 className="ml-[0.5rem] text-grey-2">Mark as Done</p1>
             </button>
