@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import Button from "./Button";
+import SolidButton from "./button/SolidButton";
 
 const Navbar = (props) => {
 	return (
@@ -21,7 +21,7 @@ const Navbar = (props) => {
 				))}
 
 				<div className="absolute right-10">
-					<Button
+					<SolidButton
 						text="Login"
 						link="/login"
 						bgColor="transparent"
