@@ -19,15 +19,10 @@ const CourseBlob = (props) => {
 			/>
 
 			<button
-				// className={`absolute right-4 ${spin && "animate-spin"}`}
-				className={`absolute right-4 ${spin && "spin-clockwise"}`}
+				className={`absolute right-4 ${direction ? "animate-spin-clockwise" : "animate-spin-counterclockwise"}`}
 				onClick={() => {
 					setExpanded(!expanded);
-					setSpin(true);
-					setTimeout(() => {
-						setSpin(false);
-						// }, 280);
-					}, 200);
+                    setDirection((prev) => !prev);
 				}}
 			>
 				<Image src="/images/settings.png" width={24} height={24} />
@@ -48,11 +43,7 @@ const CourseBlob = (props) => {
 					className={`fixed left-0 top-0 z-[9] pb-[100vh] pr-[100vw]`}
 					onClick={() => {
 						setExpanded(!expanded);
-						setSpin(true);
-						setTimeout(() => {
-							setSpin(false);
-							// }, 280);
-						}, 200);
+                        setDirection((prev) => !prev);
 					}}
 				></button>
 			)}
