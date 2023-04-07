@@ -33,9 +33,9 @@
 
 char *input_files[128], *output_files[128];
 
-char *cleanse_string(char *str) {
+char *cleanse_string(char *str, int len) {
+	if (!len) return calloc(1, 1);
 	// remove trailing whitespaces and newlines
-	int len = strlen(str);
 	char *ret = malloc((len + 1));
 	strcpy(ret, str);
 	while (len > 0 && (ret[len-1] == ' ' || ret[len-1] == '\n')) {
@@ -54,26 +54,24 @@ long long min(long long a, long long b) {
 }
 
 int main(int argc, char *argv[]) {
-	// argv[1] is the path to the meta file
-	// argv[2] is the language that the program is written in
-	// argv[3] is the path to the code
-	// argv[4] is the directory of the problem
-	if (argc != 5) {
-		printf("Usage: %s meta_file language code_dir problem_dir", argv[0]);
+	// argv[1] is the language that the program is written in
+	// argv[2] is the directory of the problem
+	if (argc != 3) {
+		printf("invalid number of arguments\n");
 		return IE;
 	}
 
-	if (chdir(argv[4])) {
+	if (chdir(argv[2])) {
 		printf("failed to chdir\n");
 		return IE;
 	}
 
-	if (strncmp(argv[2], "cpp", 4) == 0) {
+	if (strncmp(argv[1], "cpp", 4) == 0) {
 		// compile C++ program
 		pid_t pid = fork();
 		if (pid == 0) {
 			// child process
-			execl("/usr/bin/g++", "/usr/bin/g++", argv[3], NULL);
+			execl("/usr/bin/g++", "/usr/bin/g++", "main.cpp", NULL);
 		} else if (pid > 0) {
 			// parent process
 			int status;
@@ -90,12 +88,12 @@ int main(int argc, char *argv[]) {
 			printf("fork failed\n");
 			return IE;
 		}
-	} else if (strncmp(argv[2], "c", 2) == 0) {
+	} else if (strncmp(argv[1], "c", 2) == 0) {
 		// compile C program
 		pid_t pid = fork();
 		if (pid == 0) {
 			// child process
-			execl("/usr/bin/gcc", "/usr/bin/gcc", argv[3], NULL);
+			execl("/usr/bin/gcc", "/usr/bin/gcc", "main.c", NULL);
 		} else if (pid > 0) {
 			// parent process
 			int status;
@@ -112,8 +110,8 @@ int main(int argc, char *argv[]) {
 			printf("fork failed\n");
 			return IE;
 		}
-	} else if (strncmp(argv[2], "py", 3) == 0) {
-		rename(argv[3], "a.out");
+	} else if (strncmp(argv[1], "py", 3) == 0) {
+		rename("main.py", "a.out");
 		// prepend #!/usr/bin/env pypy3
 		FILE *f = fopen("a.out", "r+");
 		if (f == NULL) {
@@ -138,16 +136,15 @@ int main(int argc, char *argv[]) {
 		return IE;
 	}
 
-	FILE *init = fopen(argv[1], "r");
+	FILE *init = fopen("judge.txt", "r");
 	if (init == NULL) {
-		printf("failed to open init file\n");
+		printf("failed to open judge file\n");
 		return IE;
 	}
 
 	int time_limit, memory_limit; // time limit in seconds, memory limit in MB
-	int star_rating; // not used
-	if (fscanf(init, "%d %d %d", &time_limit, &memory_limit, &star_rating) != 3) {
-		printf("failed to read init file\n");
+	if (fscanf(init, "%d %d", &time_limit, &memory_limit) != 2) {
+		printf("failed to read judge file\n");
 		return IE;
 	}
 
@@ -189,12 +186,12 @@ int main(int argc, char *argv[]) {
 				return IE;
 			}
 			
-			rlim.rlim_cur = memory_limit * 1024 * 1024;
-			rlim.rlim_max = 1024 * 1024 * 1024; // 1 GB
-			if (setrlimit(RLIMIT_AS, &rlim)) {
-				printf("failed to set memory limit\n");
-				return IE;
-			}
+			// rlim.rlim_cur = memory_limit * 1024 * 1024;
+			// rlim.rlim_max = 1024 * 1024 * 1024; // 1 GB
+			// if (setrlimit(RLIMIT_AS, &rlim)) {
+			// 	printf("failed to set memory limit\n");
+			// 	return IE;
+			// }
 
 			ptrace(PTRACE_TRACEME, 0, NULL, NULL);
 			execl("./a.out", "./a.out", NULL);
@@ -207,24 +204,31 @@ int main(int argc, char *argv[]) {
 					if (WEXITSTATUS(status) != 0) {
 						return IR;
 					}
+					struct rusage usage;
+					getrusage(RUSAGE_CHILDREN, &usage);
+					printf("%ld", (usage.ru_utime.tv_sec - prev_use.ru_utime.tv_sec) * 1000 + (usage.ru_utime.tv_usec - prev_use.ru_utime.tv_usec) / 1000);
 					// check output
-					char *ptr1 = mmap(0, 0x1000, PROT_READ, MAP_PRIVATE, fileno(fopen("output.txt", "r")), 0);
-					char *ptr2 = mmap(0, 0x1000, PROT_READ, MAP_PRIVATE, fileno(fopen(output_files[i], "r")), 0);
-					ptr1 = cleanse_string(ptr1);
-					ptr2 = cleanse_string(ptr2);
+					FILE *f = fopen("output.txt", "r");
+					char *ptr1 = mmap(0, 0x1000000, PROT_READ, MAP_SHARED, fileno(f), 0);
+					fseek(f, 0, SEEK_END);
+					ptr1 = cleanse_string(ptr1, ftell(f));
+					fclose(f);
+					f = fopen(output_files[i], "r");
+					char *ptr2 = mmap(0, 0x1000000, PROT_READ, MAP_SHARED, fileno(f), 0);
+					fseek(f, 0, SEEK_END);
+					ptr2 = cleanse_string(ptr2, ftell(f));
+					fclose(f);
 					if (strcmp(ptr1, ptr2) != 0) {
+						printf(" WA\n");
 						return WA;
 					}
+					printf("\n");
 
 					munmap(ptr1, 0x1000);
 					munmap(ptr2, 0x1000);
-
-					struct rusage usage;
-					getrusage(RUSAGE_CHILDREN, &usage);
-					printf("%ld\n", (usage.ru_utime.tv_sec - prev_use.ru_utime.tv_sec) * 1000 + (usage.ru_utime.tv_usec - prev_use.ru_utime.tv_usec) / 1000);
 					break;
 				} else if (WIFSIGNALED(status)) {
-					int sig = WTERMSIG(status);
+					int sig = WEXITSTATUS(status);
 					if (sig == SIGXCPU) {
 						return TLE;
 					} else if (sig == SIGSEGV) {
@@ -234,14 +238,14 @@ int main(int argc, char *argv[]) {
 					} else if (sig == SIGABRT) {
 						return RTE | ABRT;
 					} else {
-						printf("signal %d\n", sig);
+						printf("unknown signal %d\n", sig);
 						return RTE;
 					}
 				} else if (WIFSTOPPED(status)) {
 					int sig = WSTOPSIG(status);
 					if (sig == SIGTRAP) {
 						long long rax = ptrace(PTRACE_PEEKUSER, pid, 8 * ORIG_RAX, NULL);
-						if (rax == 231) {
+						if (rax == 231 || rax == 60) {
 							// exit
 							// look for memory usage in /proc/pid/status
 							char path[32];
@@ -254,9 +258,9 @@ int main(int argc, char *argv[]) {
 
 							char buf[512];
 							while (fgets(buf, 512, f)) {
-								if (strncmp(buf, "VmRSS:", 6) == 0) {
+								if (strncmp(buf, "VmPeak:", 7) == 0) {
 									int mem;
-									if (sscanf(buf, "VmRSS: %d kB ", &mem) != 1) {
+									if (sscanf(buf, "VmPeak: %d kB ", &mem) != 1) {
 										printf("failed to read memory usage\n");
 										return IE;
 									}
@@ -277,7 +281,7 @@ int main(int argc, char *argv[]) {
 							return RTE | DIS_SYS;
 						}
 					} else {
-						int sig = WTERMSIG(status);
+						int sig = WEXITSTATUS(status);
 						if (sig == SIGXCPU) {
 							return TLE;
 						} else if (sig == SIGSEGV) {
@@ -287,7 +291,7 @@ int main(int argc, char *argv[]) {
 						} else if (sig == SIGABRT) {
 							return RTE | ABRT;
 						} else {
-							printf("signal %d\n", sig);
+							printf("unknown signal %d\n", sig);
 							return RTE;
 						}
 					}

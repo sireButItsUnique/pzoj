@@ -16,6 +16,7 @@ int syscall_allowed(int syscall) {
 	case 14: // rt_sigprocmask
 	case 15: // rt_sigreturn
 	case 16: // ioctl
+	case 20: // writev
 	case 21: // access
 	case 25: // mremap
 	case 26: // msync
