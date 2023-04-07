@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "express": "^4.18.2",
+    "showdown": "^2.1.0"
+  },
+  "name": "web-backend",
+  "version": "1.0.0",
+  "description": "djfhsdlf",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "no"
+  ],
+  "author": "noone",
+  "license": "ISC"
+}
