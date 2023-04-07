@@ -1,10 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
-import SolidButton from "./button/SolidButton";
+import Button from "./Button";
 
 const Navbar = (props) => {
 	return (
-		<nav className="z-[99] fixed right-0 left-0 top-0 border-b border-border">
+		<nav className="z-[99] border-b border-border">
 			<div className="relative w-full bg-dark-2 px-10 py-4 flex justify-start items-center">
 				<div className="logo">
 					<Image src="/images/pzoj.png" width="35" height="35" />
@@ -12,7 +12,7 @@ const Navbar = (props) => {
 
 				{props.links.map((link, idx) => (
 					<Link
-						className="text-grey-1 pl-10 transition duration-200 ease-in-out hover:text-white"
+						className="text-grey-1 pl-10 transition duration-200 ease-in-out hover:text-white-0"
 						href={link.url}
 						key={idx}
 					>
@@ -21,14 +21,11 @@ const Navbar = (props) => {
 				))}
 
 				<div className="absolute right-10">
-					<SolidButton
-						text="Login"
+					<Button
 						link="/login"
-						bgColor="transparent"
-						textColor="blue-1"
-						borderColor="blue-1"
-						hoverTextColor="dark-2"
-						hoverFill={true}
+						target=""
+						text="Login"
+						bgColor="dark-2"
 					/>
 				</div>
 			</div>

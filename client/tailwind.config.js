@@ -41,9 +41,6 @@ module.exports = {
 						transform: "rotate(-180deg)",
 					},
 				},
-				underline: {
-					"0%": {},
-				},
 			},
 		},
 	},
