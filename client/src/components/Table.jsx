@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck, faCircleXmark, faFile } from "@fortawesome/free-regular-svg-icons";
+import { faCircleCheck, faCircleXmark, faFile, faStar } from "@fortawesome/free-regular-svg-icons";
 
 const Table = (props) => {
 	const { data } = props;
@@ -13,6 +13,8 @@ const Table = (props) => {
 						<th className="pb-3">Status</th>
 						<th className="pb-3">Problem</th>
 						<th className="pb-3">Editorial</th>
+						<th className="pb-3">Rating</th>
+						<th className="pb-3">Tag</th>
 					</tr>
 				</thead>
 
@@ -42,6 +44,12 @@ const Table = (props) => {
 												<FontAwesomeIcon icon={faFile} className="w-[0.9rem] m-auto text-xl text-sky-500" />
 											</Link>
 										}
+									</td>
+									<td className="py-3">
+										<span className="text-yellow-200">{problem.rating} {<FontAwesomeIcon icon={faStar} className="text-xl w-[1.1rem] m-auto inline-block mt-[-0.3rem]" />}</span>
+									</td>
+									<td className="py-3">
+										<span className="border-2 border-emerald-400 rounded-xl px-2 py-1 text-emerald-400 text-xs">{problem.tag}</span>
 									</td>
 								</tr>
 							);

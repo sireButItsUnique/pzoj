@@ -13,6 +13,9 @@ export default () => {
 		{ title: "text", cover: "/images/pzoj.png", courseId: "/learn/asdada", description: "this is a test course, not indicative of final product" },
 		{ title: "text", cover: "/images/pzoj.png", courseId: "/learn/asdada", description: "this is a test course, not indicative of final product" },
 		{ title: "text", cover: "/images/pzoj.png", courseId: "/learn/asdada", description: "this is a test course, not indicative of final product" },
+        { title: "text", cover: "/images/pzoj.png", courseId: "/learn/asdada", description: "this is a test course, not indicative of final product" },
+        { title: "text", cover: "/images/pzoj.png", courseId: "/learn/asdada", description: "this is a test course, not indicative of final product" },
+        { title: "text", cover: "/images/pzoj.png", courseId: "/learn/asdada", description: "this is a test course, not indicative of final product" },
 	]);
 
 	return (
@@ -33,31 +36,33 @@ export default () => {
 			/>
 
 			<main className="bg-dark-0 w-full">
-				<div className="flex flex-row justify-center items-start relative w-4/5 mx-auto mt-[10rem] mb-[6rem]">
-					<div className="grow px-10">
-						<h1 className="mb-[2rem] text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-sky-500 font-bold text-4xl">Your Courses</h1>
-						{courses.map((course, idx) => (
-							<CourseBlob
-								key={idx}
-								title={course.title}
-								cover={course.cover}
-								description={course.description}
-								courseId={course.courseId}
-								setCourses={setCourses}
-								courses={courses}
-							/>
-						))}
+                <div className="flex flex-col w-4/5 mx-auto mt-[10rem] mb-[6rem]">
+                    <div className="flex flex-row justify-center items-start relative">
+                        <div className="grow px-10">
+                            <h1 className="mb-[2rem] text-transparent bg-clip-text bg-gradient-to-br from-emerald-500 to-sky-500 font-bold text-4xl">Your Courses</h1>
+                            {courses.map((course, idx) => (
+                                <CourseBlob
+                                    key={idx}
+                                    title={course.title}
+                                    cover={course.cover}
+                                    description={course.description}
+                                    courseId={course.courseId}
+                                    setCourses={setCourses}
+                                    courses={courses}
+                                />
+                            ))}
 
-						{!courses.length && <div className="text-grey-0">
-							<p>Uh oh! Looks like you have no courses.</p>
-							<p className="mb-[2rem]">Try adding a course from the side panel.</p>
+                            {!courses.length && <div className="text-grey-0">
+                                <p>Uh oh! Looks like you have no courses.</p>
+                                <p className="mb-[2rem]">Try adding a course from the side panel.</p>
 
-							<Image src="/images/potato-sad.png" width={350} height={350} className="ml-[-3rem]" /> {/*this is temp img unless u guys wanna keep it*/}
-						</div>}
-					</div>
-
-					<CoursePanel />
-				</div>
+                                <Image src="/images/potato-sad.png" width={350} height={350} className="ml-[-3rem]" /> {/*this is temp img unless u guys wanna keep it*/}
+                            </div>}
+                        </div>
+                        
+                        <CoursePanel />
+                    </div>
+                </div>
 			</main>
 
 			<Footer />

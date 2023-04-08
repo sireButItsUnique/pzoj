@@ -11,7 +11,7 @@ const Dice = () => {
     });
 
     return (
-        <mesh ref={dice} scale={0.5}>
+        <mesh ref={dice} scale={0.6}>
             <octahedronGeometry args={[4, 0]} />
             <meshStandardMaterial color="royalblue" />
         </mesh>

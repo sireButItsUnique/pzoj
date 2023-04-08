@@ -22,7 +22,7 @@ const Navbar = (props) => {
 
 				<div className="absolute right-10">
 					<PrimaryButton
-						link="/login"
+						link="/account"
 						target="_self"
 						text="Login"
 						bgColor="dark-2"
