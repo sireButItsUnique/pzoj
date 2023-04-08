@@ -8,13 +8,14 @@ const CodeEditor = (props) => {
     }
 
     return (
-        <div className="overlay rounded-md overflow-hidden w-full h-full shadow-4xl">
+        <div className="rounded-md w-full h-full shadow-4xl">
             <Editor
-                height="85vh"
+                height={`100%`}
                 width={`100%`}
                 language={"javascript"}
                 value={val}
-                defaultValue="// some comment"
+                theme={"vs-dark"}
+                defaultValue="// Write your code here! Input is given as a stream."
                 onChange={handleChange}
             />
         </div>
