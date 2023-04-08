@@ -1,8 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import PrimaryButton from "./button/PrimaryButton";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faKeycdn } from "@fortawesome/free-brands-svg-icons";
 
 const Navbar = (props) => {
 	return (
@@ -25,7 +23,7 @@ const Navbar = (props) => {
 				<div className="absolute right-10">
 					<PrimaryButton
 						link="/login"
-						target=""
+						target="_self"
 						text="Login"
 						bgColor="dark-2"
 					/>
