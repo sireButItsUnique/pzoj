@@ -6,23 +6,28 @@ const Footer = () => {
     return (
         <footer className="text-center">
             <hr
-                className="w-[20rem] m-auto border-b border-border my-[4rem]"
+                className="w-[20rem] m-auto border-b border-border mt-[4rem] mb-[2rem]"
             />
 
-            <SecondaryButton
-                link="https://github.com/sireButItsUnique/pzoj"
-                target="_blank"
-                text="Github"
-                bgColor="bg-dark-0"
-            />
-            <SecondaryButton
-                link="https://devpost.com/software/pzoj"
-                target="_blank"
-                text="Devpost"
-                bgColor="bg-dark-0"
-            />
+            <span className="mr-2">
+                <SecondaryButton
+                    link="https://github.com/sireButItsUnique/pzoj"
+                    target="_blank"
+                    text="Github"
+                    bgColor="bg-dark-0"
+                />
+            </span>
 
-            <p className="text-grey-1">&copy; {currYear} Team PZOJ</p>
+            <span className="ml-2">
+                <SecondaryButton
+                    link="https://devpost.com/software/pzoj"
+                    target="_blank"
+                    text="Devpost"
+                    bgColor="bg-dark-0"
+                />
+            </span>
+
+            <p className="text-grey-1 mt-[1.5rem] pb-6">&copy; {currYear} Team PZOJ</p>
         </footer>
     );
 };

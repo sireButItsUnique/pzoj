@@ -9,9 +9,9 @@ const CourseBlob = (props) => {
 	const [completed, setCompleted] = useState(false);
 
 	return (
-		<div className="relative bg-dark-1 rounded flex px-[1rem] py-[1rem] mb-[1rem] border border-border">
+		<div className="relative bg-dark-1 rounded flex pl-[1rem] py-[1rem] mb-[1rem] border border-border">
 			<Image
-				className="rounded border border-border"
+				className="rounded"
 				src={props.cover}
 				width={100}
 				height={100}
@@ -48,10 +48,10 @@ const CourseBlob = (props) => {
 				></button>
 			)}
 
-			<div className="flex-col ml-[1rem]">
+			<div className="flex-col ml-[0.8rem] max-w-[80%]">
 				<div className="flex">
 					<Link
-						className="text-grey-1 font-semibold text-lg hover:underline hover:text-grey-2"
+						className="text-grey-0 font-semibold text-lg transition duration-200 hover:text-white-0"
 						href={props.courseId}
 					>
 						{props.title}

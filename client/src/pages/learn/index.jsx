@@ -36,9 +36,9 @@ export default () => {
 				<div className="flex flex-row justify-center items-start relative w-4/5 mx-auto mt-[10rem] mb-[6rem]">
 					<div className="grow px-10">
 						<h1 className="mb-[2rem] text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-sky-500 font-bold text-4xl">Your Courses</h1>
-						{courses.map((course) => (
+						{courses.map((course, idx) => (
 							<CourseBlob
-								key={Math.random()}
+								key={idx}
 								title={course.title}
 								cover={course.cover}
 								description={course.description}
@@ -48,9 +48,11 @@ export default () => {
 							/>
 						))}
 
-						{!courses.length && <p1 className="ml-[12rem] text-grey-0">Uh oh! Looks like you have no courses. Try adding a course from the side panel.</p1>}
-						{!courses.length && <div className="absolute top-[30%] left-[22%]">
-							<Image src="/images/potato-sad.png" width={350} height={350} /> {/*this is temp img unless u guys wanna keep it*/}
+						{!courses.length && <div className="text-grey-0">
+							<p>Uh oh! Looks like you have no courses.</p>
+							<p className="mb-[2rem]">Try adding a course from the side panel.</p>
+
+							<Image src="/images/potato-sad.png" width={350} height={350} className="ml-[-3rem]" /> {/*this is temp img unless u guys wanna keep it*/}
 						</div>}
 					</div>
 
