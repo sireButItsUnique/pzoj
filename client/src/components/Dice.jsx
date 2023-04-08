@@ -1,9 +1,14 @@
 import { useFrame } from '@react-three/fiber';
 import React from "react";
+import { useState } from "react";
 
 const Dice = () => {
     const dice = React.useRef();
+    const [blocked, setBlocked] = useState(false);
     useFrame(({ clock }) => {
+        if (blocked) return;
+        setBlocked(true);
+        setTimeout(() => setBlocked(false), 1000 / 60);
         const t = clock.getElapsedTime();
         dice.current.rotation.x = t / 2;
         dice.current.rotation.y = (t / 2) / 2;
