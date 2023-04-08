@@ -27,4 +27,28 @@ body::-webkit-scrollbar-thumb {
 }
 body::-webkit-scrollbar-track {
   background-color: rgba(32, 44, 52, 0.5);
+}
+
+.course h1 {
+  color: #c7d0e2;
+  font-size: xx-large;
+  font-weight: bold;
+}
+.course h2 {
+  color: #c7d0e2;
+  font-size: x-large;
+  font-weight: 600;
+  margin-top: 1.5rem;
+}
+.course p {
+  color: #bec8db;
+  font-size: medium;
+  margin-top: 1.5rem;
+}
+.course ul {
+  margin-left: 2rem;
+  list-style-type: circle;
+}
+.course li {
+  color: #b8b5b5;
 }/*# sourceMappingURL=globals.css.map */

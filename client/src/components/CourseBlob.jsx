@@ -9,7 +9,7 @@ const CourseBlob = (props) => {
 	const [completed, setCompleted] = useState(false);
 
 	return (
-		<div className="relative bg-dark-1 rounded flex my-[1.5rem] ml-[12rem] mr-[36rem] px-[1rem] py-[1rem]">
+		<div className="relative bg-dark-1 rounded flex px-[1rem] py-[1rem]">
 			<Image
 				className="rounded"
 				src={props.cover}

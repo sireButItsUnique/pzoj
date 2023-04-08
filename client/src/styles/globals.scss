@@ -48,3 +48,33 @@ body {
         background-color: rgba($dark-2, 0.5);
     }
 }
+
+.course {
+    h1 {
+        color: $grey-2;
+        font-size: xx-large;
+        font-weight: bold;
+    }
+
+    h2 {
+        color: $grey-2;
+        font-size: x-large;
+        font-weight: 600;
+        margin-top: 1.5rem;
+    }
+
+    p {
+        color: $grey-1;
+        font-size: medium;
+        margin-top: 1.5rem;
+    }
+
+    ul {
+        margin-left: 2rem;
+        list-style-type: circle;
+    }
+
+    li {
+        color: $grey-0;
+    }
+}

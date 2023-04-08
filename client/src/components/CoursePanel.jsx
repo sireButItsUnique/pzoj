@@ -9,17 +9,24 @@ const CoursePanel = () => {
         { link: "https://codeforces.com/blog/entry/21344", text: "Expected time complexities" },
     ]);
 
-    return (
-        <div className="bg-dark-1 rounded fixed top-[11.3rem] left-[63rem] px-[1.5rem] py-[1.5rem]">
-            <div>
-                <p1 className="text-grey-1 text-xl font-semibold">Course Progress:</p1>
-                <div className="z-1 rounded-xl bg-grey-2 mt-[1rem] mb-[1.5rem] h-[1.2rem] w-[16rem] border-none">
-                    {/* <div className="rounded-xl bg-green-400 h-[1.2rem] w-[50%]" /> */}
+    const [progress, setProgress] = useState("50%");
 
-                    <div className="rounded-xl bg-gradient-to-br from-emerald-400 to-sky-500 h-[1.2rem] w-[50%]" />
+    return (
+        <div>
+            <div className="bg-dark-1 rounded px-[1.5rem] py-[1.5rem] border border-border">
+                <p1 className="text-grey-1 text-xl font-semibold">Course Progress:</p1>
+
+                <div className="z-1 rounded-xl bg-grey-2 mt-[1rem] h-[1.2rem] w-full">
+                    <div className={`rounded-xl bg-gradient-to-br from-emerald-400 to-sky-500 h-[1.2rem] w-[${progress}]`} />
                 </div>
-                <p1 className="text-grey-1 text-xl font-semibold">Add Courses:</p1> <br />
-                <button className="bg-transparent outline-grey-1 outline-dashed text-grey-1 text-3xl font-extrabold rounded mt-[1rem] mb-[1.5rem] w-[16rem] h-[6rem] transition ease-in-out duration-[800ms] hover:bg-dark-0">+</button> <br />
+            </div>
+
+            <div className="bg-dark-1 rounded px-[1.5rem] py-[1.5rem] my-[2rem] border border-border">
+                <p1 className="text-grey-1 text-xl font-semibold block">Add Courses:</p1>
+                <button className="bg-transparent outline-border outline-dashed text-grey-1 text-3xl font-extrabold rounded mt-[1rem] w-full h-[5rem] transition ease-in-out duration-200 hover:bg-dark-0">+</button>
+            </div>
+
+            <div className="bg-dark-1 rounded px-[1.5rem] py-[1.5rem] border border-border">
                 <p1 className="text-grey-1 text-xl font-semibold">Quick References:</p1>
                 <div className="">
                     {links.map((link, idx) => <>
@@ -30,7 +37,6 @@ const CoursePanel = () => {
                     </>
                     )}
                 </div>
-
             </div>
         </div>
     );
