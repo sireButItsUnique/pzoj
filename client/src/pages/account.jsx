@@ -12,6 +12,9 @@ import { useState } from "react";
 
 export default () => {
 	const [type, setType] = useState(true); // true = login & false = register
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
 	return (
 		<>
@@ -44,7 +47,7 @@ export default () => {
 					</div>
 
 					<div>
-						<form>
+						<form onSubmit={(e) => e.preventDefault()}>
 							<div className="text-grey-1 bg-dark-2 px-4 py-2 border border-border flex flex-row justify-center items-center rounded-lg">
 								<FontAwesomeIcon
 									icon={faUser}
@@ -55,6 +58,10 @@ export default () => {
 									type="text"
 									className="w-full outline-none bg-dark-2"
 									placeholder="Username"
+									value={username}
+									onChange={(e) => {
+										setUsername(e.target.value);
+									}}
 								/>
 							</div>
 
@@ -68,6 +75,10 @@ export default () => {
 									type="password"
 									className="w-full outline-none bg-dark-2"
 									placeholder="Password"
+									value={password}
+									onChange={(e) => {
+										setPassword(e.target.value);
+									}}
 								/>
 							</div>
 
@@ -82,6 +93,10 @@ export default () => {
 										type="password"
 										className="w-full outline-none bg-dark-2"
 										placeholder="Confirm Password"
+										value={confirmPassword}
+										onChange={(e) => {
+											setConfirmPassword(e.target.value);
+										}}
 									/>
 								</div>
 							)}
@@ -89,9 +104,7 @@ export default () => {
 							<div className="m-auto text-center w-full">
 								<PrimaryButton
 									link="/"
-									text={
-                                        type ? "Login" : "Register"
-                                    }
+									text={type ? "Login" : "Register"}
 									target="_self"
 									bgColor="dark-1"
 									fullWidth={true}
