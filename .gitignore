@@ -8,4 +8,6 @@ client/build/
 */yarn-debug.log*
 */yarn-error.log*
 */.pnpm-debug.log*
-problems/
+./problems
+db.db
+judge
