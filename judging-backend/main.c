@@ -180,7 +180,7 @@ int main(int argc, char *argv[]) {
 
 			struct rlimit rlim;
 			rlim.rlim_cur = time_limit;
-			rlim.rlim_max = time_limit;
+			rlim.rlim_max = time_limit + 1;
 			if (setrlimit(RLIMIT_CPU, &rlim)) {
 				printf("failed to set time limit\n");
 				return IE;
@@ -196,6 +196,7 @@ int main(int argc, char *argv[]) {
 			ptrace(PTRACE_TRACEME, 0, NULL, NULL);
 			execl("./a.out", "./a.out", NULL);
 		} else if (pid > 0) {
+			// unsigned long long penalty = 0;
 			// parent
 			while (1) {
 				int status;
@@ -206,7 +207,11 @@ int main(int argc, char *argv[]) {
 					}
 					struct rusage usage;
 					getrusage(RUSAGE_CHILDREN, &usage);
-					printf("%ld", (usage.ru_utime.tv_sec - prev_use.ru_utime.tv_sec) * 1000 + (usage.ru_utime.tv_usec - prev_use.ru_utime.tv_usec) / 1000);
+					double time = usage.ru_utime.tv_sec - prev_use.ru_utime.tv_sec + (usage.ru_utime.tv_usec - prev_use.ru_utime.tv_usec) / 1000000.;
+					time += usage.ru_stime.tv_sec - prev_use.ru_stime.tv_sec + (usage.ru_stime.tv_usec - prev_use.ru_stime.tv_usec) / 1000000.;
+					if (time > time_limit)
+						return TLE;
+					printf("%ld", (long)(time * 1000));
 					// check output
 					FILE *f = fopen("output.txt", "r");
 					char *ptr1 = mmap(0, 0x1000000, PROT_READ, MAP_SHARED, fileno(f), 0);
@@ -300,13 +305,11 @@ int main(int argc, char *argv[]) {
 					printf("program terminated abnormally\n");
 					return RTE;
 				}
-				usleep(100);
 			}
 		} else {
 			printf("fork failed\n");
 			return IE;
 		}
 	}
-	
 	return AC;
-}
+}	
