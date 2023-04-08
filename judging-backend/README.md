@@ -15,7 +15,7 @@
 
 - judging should be run with the following command:
 ./judge <language> <problem_dir>
-- each problem directory should have a "problem.txt" file, "meta.txt", and a "test" directory
+- each problem directory should have a "problem.md" file "editorial.md", "meta.txt", and a "test" directory
 - the test directory should contain the test cases referenced in meta.txt (without "test/")
 - do NOT set the problem directory as the test directory
 - test case file names cannot be over 32 characters

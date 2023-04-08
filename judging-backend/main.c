@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 		pid_t pid = fork();
 		if (pid == 0) {
 			// child process
-			execl("/usr/bin/g++", "/usr/bin/g++", "main.cpp", "-std=c++20", NULL);
+			execl("/usr/bin/g++", "/usr/bin/g++", "main.cpp", "-std=c++20", "-g", NULL);
 		} else if (pid > 0) {
 			// parent process
 			int status;
@@ -180,7 +180,7 @@ int main(int argc, char *argv[]) {
 
 			struct rlimit rlim;
 			rlim.rlim_cur = time_limit;
-			rlim.rlim_max = 10;
+			rlim.rlim_max = time_limit;
 			if (setrlimit(RLIMIT_CPU, &rlim)) {
 				printf("failed to set time limit\n");
 				return IE;
@@ -209,23 +209,24 @@ int main(int argc, char *argv[]) {
 					printf("%ld", (usage.ru_utime.tv_sec - prev_use.ru_utime.tv_sec) * 1000 + (usage.ru_utime.tv_usec - prev_use.ru_utime.tv_usec) / 1000);
 					// check output
 					FILE *f = fopen("output.txt", "r");
-					char *ptr1 = mmap(0, 0x100000, PROT_READ, MAP_SHARED, fileno(f), 0);
+					char *ptr1 = mmap(0, 0x1000000, PROT_READ, MAP_SHARED, fileno(f), 0);
 					fseek(f, 0, SEEK_END);
-					ptr1 = cleanse_string(ptr1, ftell(f));
+					char *tptr1 = cleanse_string(ptr1, ftell(f));
+					munmap(ptr1, 0x1000000);
 					fclose(f);
 					f = fopen(output_files[i], "r");
-					char *ptr2 = mmap(0, 0x100000, PROT_READ, MAP_SHARED, fileno(f), 0);
+					char *ptr2 = mmap(0, 0x1000000, PROT_READ, MAP_SHARED, fileno(f), 0);
 					fseek(f, 0, SEEK_END);
-					ptr2 = cleanse_string(ptr2, ftell(f));
+					char *tptr2 = cleanse_string(ptr2, ftell(f));
+					munmap(ptr2, 0x1000000);
 					fclose(f);
-					if (strcmp(ptr1, ptr2) != 0) {
+					if (strcmp(tptr1, tptr2) != 0) {
 						printf(" WA\n");
 						return WA;
 					}
 					printf("\n");
-
-					munmap(ptr1, 0x100000);
-					munmap(ptr2, 0x100000);
+					free(tptr1);
+					free(tptr2);
 					break;
 				} else if (WIFSIGNALED(status)) {
 					int sig = WEXITSTATUS(status);
@@ -299,6 +300,7 @@ int main(int argc, char *argv[]) {
 					printf("program terminated abnormally\n");
 					return RTE;
 				}
+				usleep(100);
 			}
 		} else {
 			printf("fork failed\n");
