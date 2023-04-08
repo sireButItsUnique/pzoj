@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 		pid_t pid = fork();
 		if (pid == 0) {
 			// child process
-			execl("/usr/bin/g++", "/usr/bin/g++", "main.cpp", NULL);
+			execl("/usr/bin/g++", "/usr/bin/g++", "main.cpp", "-std=c++20", NULL);
 		} else if (pid > 0) {
 			// parent process
 			int status;
@@ -186,12 +186,12 @@ int main(int argc, char *argv[]) {
 				return IE;
 			}
 			
-			// rlim.rlim_cur = memory_limit * 1024 * 1024;
-			// rlim.rlim_max = 1024 * 1024 * 1024; // 1 GB
-			// if (setrlimit(RLIMIT_AS, &rlim)) {
-			// 	printf("failed to set memory limit\n");
-			// 	return IE;
-			// }
+			rlim.rlim_cur = 1024 * 1024 * 1024;
+			rlim.rlim_max = 1024 * 1024 * 1024; // 1 GB
+			if (setrlimit(RLIMIT_AS, &rlim)) {
+				printf("failed to set memory limit\n");
+				return IE;
+			}
 
 			ptrace(PTRACE_TRACEME, 0, NULL, NULL);
 			execl("./a.out", "./a.out", NULL);
@@ -209,12 +209,12 @@ int main(int argc, char *argv[]) {
 					printf("%ld", (usage.ru_utime.tv_sec - prev_use.ru_utime.tv_sec) * 1000 + (usage.ru_utime.tv_usec - prev_use.ru_utime.tv_usec) / 1000);
 					// check output
 					FILE *f = fopen("output.txt", "r");
-					char *ptr1 = mmap(0, 0x1000000, PROT_READ, MAP_SHARED, fileno(f), 0);
+					char *ptr1 = mmap(0, 0x100000, PROT_READ, MAP_SHARED, fileno(f), 0);
 					fseek(f, 0, SEEK_END);
 					ptr1 = cleanse_string(ptr1, ftell(f));
 					fclose(f);
 					f = fopen(output_files[i], "r");
-					char *ptr2 = mmap(0, 0x1000000, PROT_READ, MAP_SHARED, fileno(f), 0);
+					char *ptr2 = mmap(0, 0x100000, PROT_READ, MAP_SHARED, fileno(f), 0);
 					fseek(f, 0, SEEK_END);
 					ptr2 = cleanse_string(ptr2, ftell(f));
 					fclose(f);
@@ -224,8 +224,8 @@ int main(int argc, char *argv[]) {
 					}
 					printf("\n");
 
-					munmap(ptr1, 0x1000);
-					munmap(ptr2, 0x1000);
+					munmap(ptr1, 0x100000);
+					munmap(ptr2, 0x100000);
 					break;
 				} else if (WIFSIGNALED(status)) {
 					int sig = WEXITSTATUS(status);
