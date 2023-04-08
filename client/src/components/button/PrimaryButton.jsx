@@ -8,7 +8,7 @@ const PrimaryButton = (props) => {
 			href={link}
 			target={target}
 			rel={target == "_blank" && "noopener noreferrer"}
-			class="bg-blue-1 px-3 py-2"
+			className="bg-blue-1 px-3 py-2"
 		>
 			{text}
 		</Link>
