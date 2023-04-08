@@ -15,6 +15,7 @@ const CourseOptions = (props) => {
                     }
 
                     props.setCourses([...buf]);
+                    props.setExpanded(false);
                 }}
             >
                 <Image src="/images/delete.png" width={24} height={24}/>

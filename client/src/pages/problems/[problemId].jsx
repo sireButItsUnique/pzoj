@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import CodeEditor from "@/components/Editor";
 import ProblemStatement from "@/components/ProblemStatement";
+import ProblemOptions from "@/components/ProblemOptions";
 import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
@@ -8,6 +9,8 @@ import { useState } from "react";
 export default () => {
     const [sidePanel, setSidePanel] = useState(true);
     const [problemStatement, setProblemStatement] = useState(true);
+    const [submissions, setSubmissions] = useState(false);
+    const [editorial, setEditorial] = useState(false);
 
     const [expanded, setExpanded] = useState(false);
 	const [direction, setDirection] = useState(0); // 0 means next click should be clockwise; 1 means next click should be counter clockwise
@@ -33,6 +36,20 @@ export default () => {
                     <CodeEditor />
                 </div>
 
+                {expanded && (
+                    <button
+                        className={`fixed left-0 top-0 z-[9] pb-[100vh] pr-[100vw]`}
+                        onClick={() => {
+                            setExpanded(!expanded);
+                            setDirection((prev) => !prev);
+                        }}
+                    ></button>
+                )}
+                {expanded && 
+                    <div className="fixed bottom-[2rem] left-[5rem] z-[10]">
+                        <ProblemOptions setEditorial={setEditorial} setExpanded={setExpanded} setSidePanel={setSidePanel} setProblemStatement={setProblemStatement} setSubmissions={setSubmissions}/>
+                    </div>
+                }
                 <button 
                     className={`fixed bottom-[2rem] left-[2rem] bg-none 
                     ${direction ? "animate-spin-clockwise" : "animate-spin-counterclockwise"}`}

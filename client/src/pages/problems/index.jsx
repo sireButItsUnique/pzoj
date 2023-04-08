@@ -52,7 +52,7 @@ export default () => {
 			<main className="bg-dark-0 w-full">
 				<div className="flex flex-row justify-center items-start relative w-4/5 mx-auto mt-[10rem] mb-[6rem]">
 					<div className="grow px-10">
-						<h1 className="mb-[2rem] text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-sky-500 font-bold text-4xl">Problems</h1>
+						<h1 className="mb-[2rem] text-transparent bg-clip-text bg-gradient-to-br from-emerald-500 to-sky-500 font-bold text-4xl">Problems</h1>
 						<Table
 							data={problems}
 						/>
@@ -64,7 +64,7 @@ export default () => {
 							<div className="text-grey-1 bg-dark-2 px-4 py-2 border border-border flex flex-row justify-center items-center rounded-lg">
 								<FontAwesomeIcon icon={faSearch} className="text-xl inline-block w-[1.2rem] mr-4" />
 
-								<input className="outline-none bg-dark-2" placeholder="Search for problem..." />
+								<input type="text" className="outline-none bg-dark-2" placeholder="Search for problem" />
 							</div>
 						</div>
 

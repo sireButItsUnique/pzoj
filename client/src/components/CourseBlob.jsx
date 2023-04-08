@@ -51,7 +51,7 @@ const CourseBlob = (props) => {
 			<div className="flex-col ml-[0.8rem] max-w-[80%]">
 				<div className="flex">
 					<Link
-						className="text-grey-0 font-semibold text-lg transition duration-200 hover:text-white-0"
+						className="text-blue-400 font-semibold text-lg transition ease-in-out duration-3000 hover:bg-clip-text hover:text-transparent hover:from-blue-400 hover:bg-gradient-to-br hover:to-sky-100"
 						href={props.courseId}
 					>
 						{props.title}
