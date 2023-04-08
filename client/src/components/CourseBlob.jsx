@@ -9,9 +9,9 @@ const CourseBlob = (props) => {
 	const [completed, setCompleted] = useState(false);
 
 	return (
-		<div className="relative bg-dark-1 rounded flex px-[1rem] py-[1rem]">
+		<div className="relative bg-dark-1 rounded flex px-[1rem] py-[1rem] mb-[1rem] border border-border">
 			<Image
-				className="rounded"
+				className="rounded border border-border"
 				src={props.cover}
 				width={100}
 				height={100}

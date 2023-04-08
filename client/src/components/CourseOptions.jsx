@@ -2,7 +2,7 @@ import Image from "next/image";
 const CourseOptions = (props) => {
 
     return (
-        <div className="absolute right-[-8rem] top-[3rem] z-10 flex-col bg-dark-3 rounded pt-[1rem] pb-[1rem] px-[1rem]">
+        <div className="absolute right-[-8rem] top-[3rem] z-10 flex-col bg-dark-3 rounded pt-[1rem] pb-[1rem] px-[1rem] border border-border">
             <button 
                 className="flex hover:bg-dark-2 pl-[0.5rem] pr-[4.1rem] pb-[0.25rem] pt-[0.25rem]" 
                 onClick={() => {

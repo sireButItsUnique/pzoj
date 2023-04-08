@@ -1,5 +1,9 @@
 import Head from "next/head";
+import Dice from "@/components/Dice";
 import Navbar from "@/components/Navbar";
+import { OrbitControls } from "@react-three/drei";
+import { Canvas } from '@react-three/fiber';
+
 
 export default () => {
 	return (
@@ -29,8 +33,15 @@ export default () => {
 				/>
 
 				<div className="pt-[4rem]">
-					{/*everything goes in here*/}
-					<h1 className="text-blue-0 pb-[50rem]">PZOJ</h1>
+					<h1 className="text-grey-2 text-7xl font-bold mr-[24rem]">Master Competitive Programming.</h1>
+				</div>
+				<div className="absolute top-[4rem] bottom-0 right-0 left-0">
+					<Canvas >
+						<OrbitControls />
+						<ambientLight args={["#ffffff", 0.5]} />
+						<directionalLight args={["#ffffff", 0.5]} position={[-3, 8, 1]} />
+						<Dice />
+					</Canvas>
 				</div>
 			</main>
 		</>

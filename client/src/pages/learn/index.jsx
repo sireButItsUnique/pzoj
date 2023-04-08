@@ -2,6 +2,7 @@ import Head from "next/head";
 import Navbar from "@/components/Navbar";
 import CourseBlob from "@/components/CourseBlob";
 import CoursePanel from "@/components/CoursePanel";
+import Footer from "@/components/Footer";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -32,9 +33,9 @@ export default () => {
 			/>
 
 			<main className="bg-dark-0 w-full">
-				<div className="flex flex-row justify-center items-center w-full">
-					<div className="mt-[4rem] pb-[4rem] max-w-[60%] mr-auto">
-						<h1 className="text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-sky-500 mt-[5rem] font-bold text-4xl">Your Courses</h1>
+				<div className="flex flex-row justify-center items-start relative w-4/5 mx-auto mt-[10rem] mb-[6rem]">
+					<div className="grow px-10">
+						<h1 className="mb-[2rem] text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-sky-500 font-bold text-4xl">Your Courses</h1>
 						{courses.map((course) => (
 							<CourseBlob
 								key={Math.random()}
@@ -56,6 +57,8 @@ export default () => {
 					<CoursePanel />
 				</div>
 			</main>
+
+			<Footer />
 		</>
 	);
 };
