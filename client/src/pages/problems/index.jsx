@@ -6,10 +6,28 @@ import { useState } from "react";
 
 export default () => {
 	const [problems, setProblems] = useState([
-		{ status: false, problemTitle: "Rotations in 3 Dimensions", problemLink: "/", editorialLink: "/" },
+		{ status: false, problemTitle: "Rotations in 3 Dimensions", problemLink: "/problems/areyoukidding", editorialLink: "/" },
 		{ status: true, problemTitle: "16 BIT S/W ONLY", problemLink: "/", editorialLink: "" },
 		{ status: true, problemTitle: "2spooky4me", problemLink: "/", editorialLink: "/" },
 		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
+        { status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/" },
 	]);
 
 	return (
@@ -32,7 +50,6 @@ export default () => {
 				<div className="flex flex-row justify-center items-start relative w-4/5 mx-auto mt-[10rem] mb-[6rem]">
 					<div className="grow px-10">
 						<h1 className="mb-[2rem] text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-sky-500 font-bold text-4xl">Problems</h1>
-
 						<Table
 							data={problems}
 						/>
