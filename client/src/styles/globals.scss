@@ -2,19 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css";
+
 $blue-0: #007bc7;
 $blue-1: #0098f7;
 $white-0: #ffffff;
 $black-0: #000000;
 $grey-0: #b8b5b5;
-$grey-1: #bec8db;
+$grey-1: #a7abae;
 $grey-2: #c7d0e2;
 $dark-0: #111d25;
 $dark-1: #1c2830;
 $dark-2: #202c34;
 $dark-3: #2b3a44;
-$gradient-start: #00c6ff;
-$gradient-end: #0072ff;
+$gradient-start: #10b981;
+$gradient-end: #0ea5e9;
 $border: #ffffff0d;
 
 * {
@@ -76,5 +78,89 @@ body {
 
     li {
         color: $grey-0;
+    }
+}
+
+#problem-statement-container {
+    &::-webkit-scrollbar {
+        width: 0.9rem;
+        border-left: 1px solid $border;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border: 0.3rem solid rgba(0, 0, 0, 0);
+        background-clip: padding-box;
+        border-radius: 9999px;
+        background-color: rgba($grey-1, 0.5);
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: rgba($dark-2, 0.5);
+    }
+}
+
+#problem-statement>span {
+    h1 {
+        font-size: 2.25rem;
+        color: $white-0;
+        font-weight: 700;
+        background: linear-gradient(to bottom right, $gradient-start, $gradient-end);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+    }
+
+    p {
+        font-size: 1rem;
+        color: $grey-1;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+        font-weight: bolder;
+        color: $white-0;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        padding-bottom: 0.5rem;
+        display: block;
+        width: 100%;
+        border-bottom: 1px solid $border;
+    }
+
+    pre {
+        margin-top: 0.3rem;
+        background-color: $dark-2;
+        border: 1px solid $border;
+        display: inline-block;
+        color: $grey-1;
+        border-radius: 0.25rem;
+        padding: 0.4rem 0.6rem;
+    }
+}
+
+#code-editor {
+    &>div {
+        position: relative;
+
+        &>div {
+            background-color: $dark-0;
+        }
+
+        &>section>div>div>div.overflow-guard>div.margin {
+            background-color: $dark-2 !important;
+        }
+
+        .monaco-editor {
+            padding: 1rem 0;
+        }
+
+        &>select {
+            background-color: $dark-3;
+            padding: 0.2rem;
+            margin: 0.5rem 0;
+            border-radius: 0.25rem;
+            border: 1px solid $border;
+        }
+
     }
 }

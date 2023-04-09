@@ -85,7 +85,9 @@ app.post('/api/login', (req, res) => {
 			}
 			// if password is correct, send back a token
 			if (result) {
-				res.send(getToken(row.username));
+				let token = getToken(username);
+				res.cookie['token'] = token;
+				res.send(token);
 			} else {
 				res.status(401);
 				res.end();
@@ -128,7 +130,9 @@ app.post('/api/register', (req, res) => {
 						db.run('ROLLBACK');
 						return;
 					}
-					res.send(getToken(username));
+					let token = getToken(username);
+					res.cookie['token'] = token;
+					res.send(token);
 					db.run('COMMIT');
 				});
 			});
@@ -182,7 +186,72 @@ app.get('/api/problem/:pid', (req, res) => {
 			return;
 		}
 		data = fs.readFileSync(path.join(problem_path, 'problem.md'));
-		res.send(converter.makeHtml(data.toString()));
+		data = converter.makeHtml(data.toString());
+		// let in_latex = false;
+		// for (let i = 0; i < data.length; i++) {
+		// 	if (data[i] == '$' && (i == 0 || data[i - 1] != '\\')) {
+		// 		in_latex = !in_latex;
+		// 		if (in_latex) {
+		// 			data = [data.slice(0, i), '<Latex>$', data.slice(i + 1)].join('');
+		// 			i += 8;
+		// 		} else {
+		// 			data = [data.slice(0, i), '$</Latex>', data.slice(i + 1)].join('');
+		// 			i += 9;
+		// 		}
+		// 	}
+		// }
+		res.send(data);
+	});
+});
+
+app.get('/api/problem/:pid/meta', (req, res) => {
+	let problem_path = path.join(cwd(), '..', 'problems', req.params.pid);
+	fs.readFile(path.join(problem_path, 'meta.txt'), (err, data) => {
+		if (err) {
+			console.error(err);
+			res.status(404);
+			res.send('Problem not found');
+			return;
+		}
+		data = data.toString().split('\n');
+		res.send({
+			pid: req.params.pid,
+			title: data[0],
+			difficulty: data[1],
+			tag: data[2],
+			time: data[3],
+			memory: data[4],
+		});
+	});
+});
+
+app.get('/api/problem/:pid/status', (req, res) => {
+	if (req.cookies == undefined) {
+		res.end();
+		return;
+	}
+	let username = req.cookies['token'];
+	if (username == undefined) {
+		res.end();
+		return;
+	}
+	username = verifyToken(username);
+	if (username == null) {
+		res.end();
+		return;
+	}
+	db.all('SELECT * FROM submissions WHERE pid=? AND username=?', [req.params.pid, username], (err, rows) => {
+		if (err) {
+			console.error(err);
+			res.status(500);
+			res.end();
+			return;
+		}
+		if (rows.length) {
+			res.send("wtf");
+		} else {
+			res.end();
+		}
 	});
 });
 
@@ -211,42 +280,17 @@ app.get('/api/problems', (req, res) => {
 		}
 		files.forEach((file) => {
 			let tmp = [file, ...fs.readFileSync(path.join(cwd(), '..', 'problems', file, 'meta.txt')).toString().split('\n')];
-			problems.push({
-				pid: tmp[0],
-				title: tmp[1],
-				difficulty: tmp[2],
-				tags: tmp[3],
-				time: tmp[4],
-				memory: tmp[5]
-			});
-		});
-		res.send(JSON.stringify(problems));
-	});
-});
-
-app.get('/api/search', (req, res) => {
-	let problems = [];
-	fs.readdir(path.join(cwd(), '..', 'problems'), (err, files) => {
-		if (err) {
-			console.error(err);
-			res.status(500);
-			res.end();
-			return;
-		}
-		files.forEach((file) => {
-			if (!file.includes(req.query.q))
+			if (req.query.q && !tmp[0].includes(req.query.q) && !tmp[1].includes(req.query.q))
 				return;
-			let tmp = [file, ...fs.readFileSync(path.join(cwd(), '..', 'problems', file, 'meta.txt')).toString().split('\n')];
 			problems.push({
 				pid: tmp[0],
 				title: tmp[1],
 				difficulty: tmp[2],
-				tags: tmp[3],
+				tag: tmp[3],
 				time: tmp[4],
-				memory: tmp[5]
+				memory: tmp[5],
 			});
 		});
-		let query = req.query.q;
 		res.send(JSON.stringify(problems));
 	});
 });
@@ -260,18 +304,11 @@ app.get('/api/problems/random', (req, res) => {
 			return;
 		}
 		let file = files[Math.floor(Math.random() * files.length)];
-		let tmp = [file, ...fs.readFileSync(path.join(cwd(), '..', 'problems', file, 'meta.txt')).toString().split('\n')];
-		let problem = {
-			pid: tmp[0],
-			title: tmp[1],
-			difficulty: tmp[2],
-			tags: tmp[3],
-			time: tmp[4],
-			memory: tmp[5]
-		}
-		res.send(JSON.stringify(problem));
+		res.redirect('/problems/' + file);
 	});
 });
+
+/* ------------------ SUBMISSIONS ------------------ */
 
 const wss = new ws.Server({ port: 3002 });
 
@@ -280,7 +317,6 @@ wss.on('connection', (ws) => {
 		let subtime = Math.floor(Date.now() / 1000);
 		let data = JSON.parse(message.toString());
 		let token = data.token;
-		console.log(token);
 		let user = verifyToken(token);
 		if (user === null) {
 			ws.send('error: Invalid token');
@@ -307,6 +343,8 @@ wss.on('connection', (ws) => {
 			return;
 		}
 		judge(code_path, lang, problem_path, ws).then((res) => {
+			if (res[res.length - 1].startsWith('IE'))
+				return;
 			db.serialize(() => {
 				db.run('BEGIN IMMEDIATE TRANSACTION');
 				db.run('INSERT INTO submissions (username, problemid, timestamp, time, memory, result) VALUES (?, ?, ?, ?, ?, ?)', [user, data.pid, subtime, ...res], (err) => {
@@ -319,6 +357,64 @@ wss.on('connection', (ws) => {
 				});
 			});
 		});
+	});
+});
+
+/* ------------------ COURSES ------------------ */
+
+app.get('/api/courses', (req, res) => {
+	let courses = [];
+	fs.readdir(path.join(cwd(), '..', 'courses'), (err, files) => {
+		if (err) {
+			console.error(err);
+			res.status(500);
+			res.end();
+			return;
+		}
+		files.forEach((file) => {
+			if (file == "README.md")
+				return;
+			let tmp = [file, ...fs.readFileSync(path.join(cwd(), '..', 'courses', file, 'meta.txt')).toString().split('\n')];
+			courses.push({
+				cid: tmp[0],
+				title: tmp[1],
+				description: tmp[2],
+			});
+		});
+		res.send(JSON.stringify(courses));
+	});
+});
+
+app.get('/api/courses/:cid/img.png', (req, res) => {
+	fs.readdir(path.join(cwd(), '..', 'courses', req.params.cid), (err, files) => {
+		if (err) {
+			console.error(err);
+			res.status(500);
+			res.end();
+			return;
+		}
+		if (files.includes('img.png')) {
+			res.setHeader('Content-Type', 'image/png');
+			res.sendFile(path.join(cwd(), '..', 'courses', req.params.cid, 'img.png'));
+		} else {
+			res.status(404);
+			res.end();
+		}
+	});
+});
+
+app.get('/api/courses/:cid', (req, res) => {
+	let cid = req.params.cid;
+	let course = {};
+	fs.readFile(path.join(cwd(), '..', 'courses', cid, 'content.md'), (err, data) => {
+		if (err) {
+			console.error(err);
+			res.status(500);
+			res.end();
+			return;
+		}
+		course.content = data.toString();
+		res.send(converter.makeHtml(course.content));
 	});
 });
 

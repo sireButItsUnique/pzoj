@@ -57,12 +57,12 @@ int main(int argc, char *argv[]) {
 	// argv[1] is the language that the program is written in
 	// argv[2] is the directory of the problem
 	if (argc != 3) {
-		printf("invalid number of arguments\n");
+		fprintf(stderr, "invalid number of arguments\n");
 		return IE;
 	}
 
 	if (chdir(argv[2])) {
-		printf("failed to chdir\n");
+		fprintf(stderr, "failed to chdir\n");
 		return IE;
 	}
 
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 		pid_t pid = fork();
 		if (pid == 0) {
 			// child process
-			execl("/usr/bin/g++", "/usr/bin/g++", "main.cpp", "-std=c++20", "-g", NULL);
+			execl("/usr/bin/g++", "/usr/bin/g++", "main.cpp"/*, "-std=c++20"*/, NULL);
 		} else if (pid > 0) {
 			// parent process
 			int status;
@@ -81,11 +81,11 @@ int main(int argc, char *argv[]) {
 					return CE;
 				}
 			} else {
-				printf("compiler terminated abnormally\n");
+				fprintf(stderr, "compiler terminated abnormally\n");
 				return IE;
 			}
 		} else {
-			printf("fork failed\n");
+			fprintf(stderr, "fork failed\n");
 			return IE;
 		}
 	} else if (strncmp(argv[1], "c", 2) == 0) {
@@ -103,11 +103,11 @@ int main(int argc, char *argv[]) {
 					return CE;
 				}
 			} else {
-				printf("compiler terminated abnormally\n");
+				fprintf(stderr, "compiler terminated abnormally\n");
 				return IE;
 			}
 		} else {
-			printf("fork failed\n");
+			fprintf(stderr, "fork failed\n");
 			return IE;
 		}
 	} else if (strncmp(argv[1], "py", 3) == 0) {
@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
 		// prepend #!/usr/bin/env pypy3
 		FILE *f = fopen("a.out", "r+");
 		if (f == NULL) {
-			printf("failed to open file handle a.out\n");
+			fprintf(stderr, "failed to open file handle a.out\n");
 			return IE;
 		}
 
@@ -127,24 +127,24 @@ int main(int argc, char *argv[]) {
 		fclose(f);
 
 		if (chmod("a.out", 0755)) {
-			printf("failed to chmod a.out\n");
+			fprintf(stderr, "failed to chmod a.out\n");
 			return IE;
 		}
 	}
 	else {
-		printf("unknown language\n");
+		fprintf(stderr, "unknown language\n");
 		return IE;
 	}
 
 	FILE *init = fopen("judge.txt", "r");
 	if (init == NULL) {
-		printf("failed to open judge file\n");
+		fprintf(stderr, "failed to open judge file\n");
 		return IE;
 	}
 
 	int time_limit, memory_limit; // time limit in seconds, memory limit in MB
 	if (fscanf(init, "%d %d", &time_limit, &memory_limit) != 2) {
-		printf("failed to read judge file\n");
+		fprintf(stderr, "failed to read judge file\n");
 		return IE;
 	}
 
@@ -182,14 +182,14 @@ int main(int argc, char *argv[]) {
 			rlim.rlim_cur = time_limit;
 			rlim.rlim_max = time_limit + 1;
 			if (setrlimit(RLIMIT_CPU, &rlim)) {
-				printf("failed to set time limit\n");
+				fprintf(stderr, "failed to set time limit\n");
 				return IE;
 			}
 			
 			rlim.rlim_cur = 1024 * 1024 * 1024;
 			rlim.rlim_max = 1024 * 1024 * 1024; // 1 GB
 			if (setrlimit(RLIMIT_AS, &rlim)) {
-				printf("failed to set memory limit\n");
+				fprintf(stderr, "failed to set memory limit\n");
 				return IE;
 			}
 
@@ -244,7 +244,7 @@ int main(int argc, char *argv[]) {
 					} else if (sig == SIGABRT) {
 						return RTE | ABRT;
 					} else {
-						printf("unknown signal %d\n", sig);
+						fprintf(stderr, "unknown signal %d\n", sig);
 						return RTE;
 					}
 				} else if (WIFSTOPPED(status)) {
@@ -258,7 +258,7 @@ int main(int argc, char *argv[]) {
 							sprintf(path, "/proc/%d/status", pid);
 							FILE *f = fopen(path, "r");
 							if (f == NULL) {
-								printf("failed to open /proc/pid/status\n");
+								fprintf(stderr, "failed to open /proc/pid/status\n");
 								return IE;
 							}
 
@@ -267,7 +267,7 @@ int main(int argc, char *argv[]) {
 								if (strncmp(buf, "VmPeak:", 7) == 0) {
 									int mem;
 									if (sscanf(buf, "VmPeak: %d kB ", &mem) != 1) {
-										printf("failed to read memory usage\n");
+										fprintf(stderr, "failed to read memory usage\n");
 										return IE;
 									}
 									if (mem > memory_limit * 1024) {
@@ -282,7 +282,7 @@ int main(int argc, char *argv[]) {
 						if (syscall_allowed(rax)) {
 							ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
 						} else {
-							printf("disallowed syscall %lld\n", rax);
+							fprintf(stderr, "disallowed syscall %lld\n", rax);
 							kill(pid, SIGKILL);
 							return RTE | DIS_SYS;
 						}
@@ -297,17 +297,17 @@ int main(int argc, char *argv[]) {
 						} else if (sig == SIGABRT) {
 							return RTE | ABRT;
 						} else {
-							printf("unknown signal %d\n", sig);
+							fprintf(stderr, "unknown signal %d\n", sig);
 							return RTE;
 						}
 					}
 				} else {
-					printf("program terminated abnormally\n");
+					fprintf(stderr, "program terminated abnormally\n");
 					return RTE;
 				}
 			}
 		} else {
-			printf("fork failed\n");
+			fprintf(stderr, "fork failed\n");
 			return IE;
 		}
 	}

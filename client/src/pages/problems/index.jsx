@@ -1,3 +1,4 @@
+import axios from "axios";
 import Head from "next/head";
 import Navbar from "@/components/Navbar";
 import Table from "@/components/Table";
@@ -5,33 +6,29 @@ import PrimaryButton from "@/components/button/PrimaryButton";
 import Footer from "@/components/Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShuffle, faSearch, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
-//asd
+import { useState, useEffect, useRef } from "react";
+
 export default () => {
-	const [problems, setProblems] = useState([
-		{ status: false, problemTitle: "Rotations in 3 Dimensions", problemLink: "/problems/areyoukidding", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: true, problemTitle: "16 BIT S/W ONLY", problemLink: "/", editorialLink: "", tag: "Data Structures", rating: 1 },
-		{ status: true, problemTitle: "2spooky4me", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 2 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-		{ status: false, problemTitle: "Mispelling", problemLink: "/", editorialLink: "/", tag: "Data Structures", rating: 5 },
-	]);
+	const [problems, setProblems] = useState([]);
+	const [query, setQuery] = useState("");
+
+	useEffect(() => {
+		axios.get("/api/problems").then(async (res) => {
+			let problemList = res.data.map(async (p) => {
+				return {
+					status: Boolean(await axios.get(`/api/problem/${p.pid}/status`).data),
+					problemTitle: p.title,
+					rating: p.difficulty,
+					problemLink: `/problems/${p.pid}`,
+					editorialLink: `/api/problem/${p.pid}/editorial`,
+					tag: p.tag,
+				};
+			});
+			setProblems(await Promise.all(problemList));
+		}).catch((err) => {
+			console.error(err);
+		});
+	}, []);
 
 	return (
 		<>
@@ -63,7 +60,19 @@ export default () => {
 							<h2 className="text-grey-1 text-xl font-semibold mb-[1rem]">Find a Problem:</h2>
 							<div className="text-grey-1 bg-dark-2 px-4 py-2 border border-border flex flex-row justify-center items-center rounded-lg">
 								<FontAwesomeIcon icon={faSearch} className="text-xl inline-block w-[1.2rem] mr-4" />
-								<input type="text" className="outline-none bg-dark-2 mr-4 w-[12rem]" placeholder="Search for a problem" />
+								<input
+									type="text"
+									value={query}
+									onChange={(e) => setQuery(e.currentTarget.value)}
+									className="outline-none bg-dark-2 mr-4 w-[12rem]"
+									placeholder="Search for a problem"
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											// click the button	
+											document.querySelector(".search-button").click(); // this is very scuffed @frontend help me
+										}
+									}}
+								/>
 
 								<PrimaryButton
 									link="/problems"
@@ -74,8 +83,29 @@ export default () => {
 									}
 									target="_self"
 									bgColor="dark-2"
+									className="search-button"
 									onClick={(e) => {
 										e.preventDefault();
+										axios.get(`/api/problems?q=${query}`).then(async (res) => {
+											let problemList = res.data.map(async (p) => {
+												return {
+													status: Boolean(await axios.get(`/api/problem/${p.pid}/status`).data),
+													problemTitle: p.title,
+													rating: p.difficulty,
+													problemLink: `/problems/${p.pid}`,
+													editorialLink: `/problems/${p.pid}/editorial`,
+													tag: p.tag,
+												};
+											});
+											setProblems(await Promise.all(problemList));
+										}).catch((err) => {
+											if (err.response.status === 500) {
+												// server died
+												return;
+											} else {
+												console.error(err);
+											}
+										});
 									}}
 								/>
 							</div>
@@ -85,13 +115,18 @@ export default () => {
 							<h2 className="text-grey-1 text-xl font-semibold mb-[1rem]">Random Problem:</h2>
 
 							<PrimaryButton
-								link="/"
+								link="/api/problems/random"
 								target="_self"
 								text={
-									<span><FontAwesomeIcon icon={faShuffle} className="text-xl float-right inline-block w-[1.2rem] mt-[-0.23rem] ml-0.5" /> Random</span>
+									<span><FontAwesomeIcon icon={faShuffle} className="text-xl inline-block w-[1.2rem] mt-[-0.23rem] mr-0.5" /> Random</span>
 								}
 								bgColor="dark-1"
+							// onClick={(e) => {
+							// 	e.preventDefault();
+							// 	setProblems();
+							// }}
 							/>
+
 						</div>
 					</div>
 				</div>

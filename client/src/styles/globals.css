@@ -1,3 +1,4 @@
+@import "https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -23,7 +24,7 @@ body::-webkit-scrollbar-thumb {
   border: 0.3rem solid rgba(0, 0, 0, 0);
   background-clip: padding-box;
   border-radius: 9999px;
-  background-color: rgba(190, 200, 219, 0.5);
+  background-color: rgba(167, 171, 174, 0.5);
 }
 body::-webkit-scrollbar-track {
   background-color: rgba(32, 44, 52, 0.5);
@@ -41,7 +42,7 @@ body::-webkit-scrollbar-track {
   margin-top: 1.5rem;
 }
 .course p {
-  color: #bec8db;
+  color: #a7abae;
   font-size: medium;
   margin-top: 1.5rem;
 }
@@ -51,4 +52,72 @@ body::-webkit-scrollbar-track {
 }
 .course li {
   color: #b8b5b5;
+}
+
+#problem-statement-container::-webkit-scrollbar {
+  width: 0.9rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.0509803922);
+}
+#problem-statement-container::-webkit-scrollbar-thumb {
+  border: 0.3rem solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+  border-radius: 9999px;
+  background-color: rgba(167, 171, 174, 0.5);
+}
+#problem-statement-container::-webkit-scrollbar-track {
+  background-color: rgba(32, 44, 52, 0.5);
+}
+
+#problem-statement > span h1 {
+  font-size: 2.25rem;
+  color: #ffffff;
+  font-weight: 700;
+  background: linear-gradient(to bottom right, #10b981, #0ea5e9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+#problem-statement > span p {
+  font-size: 1rem;
+  color: #a7abae;
+}
+#problem-statement > span h2 {
+  font-size: 1.3rem;
+  font-weight: bolder;
+  color: #ffffff;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.0509803922);
+}
+#problem-statement > span pre {
+  margin-top: 0.3rem;
+  background-color: #202c34;
+  border: 1px solid rgba(255, 255, 255, 0.0509803922);
+  display: inline-block;
+  color: #a7abae;
+  border-radius: 0.25rem;
+  padding: 0.4rem 0.6rem;
+}
+
+#code-editor > div {
+  position: relative;
+}
+#code-editor > div > div {
+  background-color: #111d25;
+}
+#code-editor > div > section > div > div > div.overflow-guard > div.margin {
+  background-color: #202c34 !important;
+}
+#code-editor > div .monaco-editor {
+  padding: 1rem 0;
+}
+#code-editor > div > select {
+  background-color: #2b3a44;
+  padding: 0.2rem;
+  margin: 0.5rem 0;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.0509803922);
 }/*# sourceMappingURL=globals.css.map */

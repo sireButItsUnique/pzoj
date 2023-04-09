@@ -1,57 +1,100 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { InlineTex } from "react-tex";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar, faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 
-export default () => {
+export default (props) => {
 	const router = useRouter();
-	const { courseId } = router.query;
+	const [showLimits, setShowLimits] = useState(true);
+	const [showTags, setShowTags] = useState(false);
+	const [tags, setTags] = useState("");
+	const [content, setContent] = useState("");
+	const [difficulty, setDifficulty] = useState(0);
+	const [time, setTime] = useState(0);
+	const [memory, setMemory] = useState(0);
 
-    const [tags, setTags] = useState(["Seg Tree", "Dp", "Recursion"]);
-	const [content, setContent] = useState(<div className="course">
-		<h1 id="ioi13p6game">IOI '13 P6 - Game</h1>
-		<p>Bazza and Shazza are playing a game. The board is a grid of cells, with $R$ rows number $0,\dots,R-1$, and $C$ columns numbered $0,\dots,C-1$. We let $(P,Q)$ denote the cell in row $P$ and column $Q$. Each cell contains a non-negative integer, and at the beginning of the game all of these integers are zero.</p>
-		<p>The game proceeds as follows. At any time, Bazza may either:</p>
-		<ul>
-			<li>update a cell $(P,Q)$, by assigning the integer that it contains;</li>
-			<li>ask Shazza to calculate the greatest common divisor (GCD) of all integers within a rectangular block of cells, with opposite corners $(P,Q)$ and $(U,V)$ inclusive. Bazza will take $N_U+N_Q$ actions (updating cells $N_U$ times and asking question $N_Q$ times) before he gets bored and goes outside to play cricket.</li>
-		</ul>
-		<p>Your task is to work out the correct answers.</p>
-		<h2 id="example">Example</h2>
-		<p>Suppose $R=2$ and $C=3$, and Bazza begins with the following updates:</p>
-		<ul>
-			<li>Update cell $(0,0)$ to $20$;</li>
-			<li>Update cell $(0,2)$ to $15$;</li>
-			<li>Update cell $(1,1)$ to $12$.</li>
-		</ul>
-		<p>The resulting grid is shown in the picture above. Bazza might then ask for GCDs in the following rectangles:</p>
-		<ul>
-			<li>Opposite corners $(0,0)$ and $(0,2)$: The three integers in this rectangle are $20,0$ and $15$, and their GCD is $5$.</li>
-			<li>Opposite corners $(0,0)$ and $(1,1)$: The four integers in this rectangle are $20,0,0,$ and $12$, and their GCD is $4$.</li>
-		</ul>
-		<p>Now suppose Bazza makes the following updates:</p>
-		<ul>
-			<li>Update cell $(0,1)$ to $6$;</li>
-			<li>Update cell $(1,1)$ to $14$.</li>
-		</ul>
-	</div>);
+	useEffect(() => {
+		const problemId = router.query.problemId;
+		if (!problemId) return;
+		axios.get(`/api/problem/${problemId}/meta`).then((res) => {
+			setTags([res.data.tag]);
+			setDifficulty(parseInt(res.data.difficulty));
+			setTime(parseInt(res.data.time));
+			setMemory(parseInt(res.data.memory));
+		}).catch((err) => {
+			console.error(err);
+		});
+		axios.get(`/api/problem/${problemId}`).then((res) => {
+			setContent(res.data);
+		}).catch((err) => {
+			console.error(err);
+		});
+	}, [router]);
+
 	return (
 		<>
-			<div className="w-full">
-                <div className="flex flex-row pb-[1rem] border-b-[0.1rem] border-dark-1">
-                    <div className="mr-[0.5rem]">
-                        <p1 className="text-lg font-semibold mt-[2rem] text-transparent bg-clip-text bg-gradient-to-br from-amber-400 to-yellow-100">Difficulty: </p1>
-                        <p1 className="text-xl text-yellow-200 mt-[2rem]">10</p1>
-                        <FontAwesomeIcon icon={faStar} className="text-yellow-200 ml-[0.3rem] mt-[-0.4rem] text-xl inline w-[1.2rem]"/>
-                    </div>
-                    <div className="flex flex-wrap">
-                        {tags.map((tag) => <p1 className="bg-blue-600 rounded px-[0.5rem] mb-[0.3rem] border-grey-2 border-[0.05rem]  text-grey-2 mx-[0.5rem]">{tag}</p1>)}
-                    </div>
-                    
-                </div>
-                
-                {content}
-            </div>
+			<div className="w-full px-8 py-8 overflow-y-scroll max-h-[100vh]" id="problem-statement-container">
+				<div className="flex flex-row justify-start items-center">
+					<p1 className="inline-block text-grey-1">Difficulty: </p1>
+					<p1 className="inline-block text-yellow-200 mx-1">{difficulty}</p1>
+					<FontAwesomeIcon icon={faStar} className="text-yellow-200 text-xl inline w-[1.2rem]" />
+				</div>
+
+				<hr className="border-b border-border my-[1rem]" />
+
+				<div id="problem-statement" >
+					<InlineTex texSeperator="${1}" texContent={content} />
+				</div>
+
+				<hr className="mt-8 mb-3 border-b border-border" />
+
+				<div>
+					<div
+						className="flex flex-row justify-between items-center cursor-pointer mb-2 group"
+						onClick={(e) => {
+							setShowLimits((prev) => !prev);
+						}}
+					>
+						<span className="inline-block text-grey-1 transition duration-200 group-hover:text-white-0">Limits:</span>
+
+						<FontAwesomeIcon
+							icon={faCaretUp}
+							className={`text-grey-1 inline-block text-xl w-[0.7rem] ${!showLimits && "rotate-180"}`}
+						/>
+					</div>
+
+					{showLimits &&
+						<ul className="list-disc">
+							<li className="text-grey-1 block">Time Limit: <span className="text-blue-1">{time}s</span></li>
+							<li className="text-grey-1 block">Memory Limit: <span className="text-blue-1">{memory}MB</span></li>
+						</ul>
+					}
+				</div>
+
+				<hr className="my-3 border-b border-border" />
+
+				<div>
+					<div
+						className="flex flex-row justify-between items-center cursor-pointer mb-2 group"
+						onClick={(e) => {
+							setShowTags((prev) => !prev);
+						}}
+					>
+						<span className="inline-block text-grey-1 transition duration-200 group-hover:text-white-0">Related Tags:</span>
+
+						<FontAwesomeIcon
+							icon={faCaretDown}
+							className={`text-grey-1 inline-block text-xl w-[0.7rem] ${showTags && "rotate-180"}`}
+						/>
+					</div>
+
+					{showTags ?
+						tags.map((tag, idx) => <span key={idx} className={`${idx & 1 && "mx-2"} border-2 border-emerald-400 rounded-xl px-2 py-1 text-emerald-400 text-xs`}>{tag}</span>) : ""
+					}
+				</div>
+			</div>
 		</>
 	);
 };

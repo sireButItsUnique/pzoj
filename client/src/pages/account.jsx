@@ -1,9 +1,9 @@
+import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import PrimaryButton from "@/components/button/PrimaryButton";
-import SecondaryButton from "@/components/button/SecondaryButton";
 import Footer from "@/components/Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
@@ -12,9 +12,9 @@ import { useState } from "react";
 
 export default () => {
 	const [type, setType] = useState(true); // true = login & false = register
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+	const [username, setUsername] = useState("");
+	const [password, setPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
 
 	return (
 		<>
@@ -109,7 +109,62 @@ export default () => {
 									bgColor="dark-1"
 									fullWidth={true}
 									submit={true}
-									onClick=""
+									onClick={async (e) => {
+										e.preventDefault();
+										if (!type) {
+											// register
+											if (!(username && password)) {
+												// die
+												return;
+											}
+											if (confirmPassword != password) {
+												// die
+												return;
+											}
+											axios.post('/api/register', {
+												username: username,
+												password: password,
+											}).then((res) => {
+												localStorage.setItem('token', res.data);
+												window.location.href = "/problems";
+											}).catch((err) => {
+												let code = err.response.status;
+												if (code == 409) {
+													// username taken
+													console.log(localStorage.getItem('token'));
+												} else if (code == 500) {
+													// server error
+												} else {
+													console.error(err);
+												}
+											});
+										} else {
+											// login
+											if (!(username && password)) {
+												// die
+												return;
+											}
+											axios.post('/api/login', {
+												username: username,
+												password: password,
+											}).then((res) => {
+												localStorage.setItem('token', res.data);
+												console.log("logged in");
+												window.location.href = "/problems";
+											}).catch((err) => {
+												let code = err.response.status;
+												if (code == 404) {
+													// user not found
+												} else if (code == 401) {
+													// wrong password
+												} else if (code == 500) {
+													// server error
+												} else {
+													console.error(err);
+												}
+											});
+										}
+									}}
 								/>
 							</div>
 

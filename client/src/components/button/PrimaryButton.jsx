@@ -9,7 +9,7 @@ const PrimaryButton = (props) => {
 			href={link}
 			target={target}
 			rel={target == "_blank" ? "noopener noreferrer" : ""}
-			className={`relative p-0.5 inline-flex items-center justify-center overflow-hidden group rounded-lg ${fullWidth && "w-full"}`}
+			className={(props.className || '') + ` relative p-0.5 inline-flex items-center justify-center overflow-hidden group rounded-lg ${fullWidth && "w-full"}`}
 			onClick={onClick}
 		>
 			<span className="w-full h-full bg-gradient-to-br from-emerald-400 to-sky-500 group-hover:from-emerald-400 group-hover:to-sky-500 absolute"></span>

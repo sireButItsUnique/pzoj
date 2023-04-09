@@ -22,7 +22,7 @@ const CourseBlob = (props) => {
 				className={`absolute right-4 ${direction ? "animate-spin-clockwise" : "animate-spin-counterclockwise"}`}
 				onClick={() => {
 					setExpanded(!expanded);
-                    setDirection((prev) => !prev);
+					setDirection((prev) => !prev);
 				}}
 			>
 				<Image src="/images/settings.png" width={24} height={24} />
@@ -43,7 +43,7 @@ const CourseBlob = (props) => {
 					className={`fixed left-0 top-0 z-[9] pb-[100vh] pr-[100vw]`}
 					onClick={() => {
 						setExpanded(!expanded);
-                        setDirection((prev) => !prev);
+						setDirection((prev) => !prev);
 					}}
 				></button>
 			)}
@@ -52,7 +52,7 @@ const CourseBlob = (props) => {
 				<div className="flex">
 					<Link
 						className="text-blue-1 font-semibold text-lg transition ease-in-out duration-200 hover:text-blue-0"
-						href={props.courseId}
+						href={"/learn/" + props.courseId}
 					>
 						{props.title}
 					</Link>
