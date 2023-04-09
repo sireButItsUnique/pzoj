@@ -33,7 +33,7 @@ int main() {
 }
 ```
 
-will cause a Runtime Error if `n` is too large. However, 
+will cause a Runtime Error if $n$ is too large. However, 
 
 ```cpp
 int a[1000000];
@@ -42,7 +42,7 @@ int main() {
 }
 ```
 
-will not cause a Runtime Error. Remember to change the size of the array to the maximum value of `n` for the problem.
+will not cause a Runtime Error. Remember to change the size of the array to the maximum value of $n$ for the problem.
 
 ### Large Integers
 
@@ -67,3 +67,5 @@ This is about 3x faster than using `input()` and `print()`.
 ### Not using Python
 
 Python is a very slow language, and is not recommended for competitive programming. If you are using Python, you should try to use it as little as possible. For example, you can use Python to solve trivial problems ($\le 5$ stars), but use C++ for harder problems.
+
+## Join our [Discord](https://discord.gg/SvQMY8UTeA) for more tips!

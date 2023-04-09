@@ -11,13 +11,14 @@ const CourseBlob = (props) => {
 	return (
 		<div className="relative bg-dark-1 rounded flex pl-[1rem] py-[1rem] mb-[1rem] border border-border">
 			<Image
-				className="rounded"
+				className="rounded mr-2"
 				src={props.cover}
 				width={100}
 				height={100}
 				style={{ objectFit: "scale-down" }}
 			/>
 
+			{props.isPin && <Image className="absolute right-12" src="/images/pin.png" width={24} height={24} />}
 			<button
 				className={`absolute right-4 ${direction ? "animate-spin-clockwise" : "animate-spin-counterclockwise"}`}
 				onClick={() => {
@@ -36,6 +37,11 @@ const CourseBlob = (props) => {
 					setCompleted={setCompleted}
 					setCourses={props.setCourses}
 					courseId={props.courseId}
+					pinned={props.pinned}
+					setPinned={props.setPinned}
+					key={props.key}
+					id={props.id}
+					isPin={props.isPin}
 				/>
 			)}
 			{expanded && (

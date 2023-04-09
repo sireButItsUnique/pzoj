@@ -9,19 +9,44 @@ import { useState, useEffect } from "react";
 
 export default () => {
 	const [courses, setCourses] = useState([]);
+	const [pinned, setPinned] = useState([]);
 
 	useEffect(() => {
 		axios.get("/api/courses").then(async (res) => {
-			let courseList = res.data.map(async (p) => {
-				return {
-					title: p.title,
-					cover: '/images/' + p.cid + '.png',
-					courseId: p.cid,
-					description: p.description,
-				};
-			});
-			console.log(await Promise.all(courseList));
-			setCourses(await Promise.all(courseList));
+			let pinnedStorage;
+			if (localStorage.getItem("pinned")) {
+				pinnedStorage = JSON.parse(localStorage.getItem("pinned"));
+			} else {
+				localStorage.setItem("pinned", "[]");
+				pinnedStorage = [];
+			}
+			let courseList = await Promise.all(res.data.map(async (p) => {
+				let bool = false;
+				for (let i = 0; i < pinnedStorage.length; i++) {
+					if (pinnedStorage[i] == p.cid) {
+						bool = true;
+						break;
+					}
+				}
+				if (pinnedStorage && bool) {
+					setPinned([...pinned, {
+						title: p.title,
+						cover: '/images/' + p.cid + '.png',
+						courseId: p.cid,
+						description: p.description,
+					}]);
+					return null;
+				} else {
+					return {
+						title: p.title,
+						cover: '/images/' + p.cid + '.png',
+						courseId: p.cid,
+						description: p.description,
+					};
+				}
+			}));
+			courseList = courseList.filter((p) => p !== null);
+			setCourses(courseList);
 		}).catch((err) => {
 			console.error(err);
 		});
@@ -49,19 +74,39 @@ export default () => {
 					<div className="flex flex-row justify-center items-start relative">
 						<div className="grow px-10">
 							<h1 className="mb-[2rem] text-transparent bg-clip-text bg-gradient-to-br from-emerald-500 to-sky-500 font-bold text-4xl">Your Courses</h1>
-							{courses.map((course, idx) => (
+							{pinned.map((course, idx) => (
 								<CourseBlob
 									key={idx}
+									id={idx}
 									title={course.title}
 									cover={course.cover}
 									description={course.description}
 									courseId={course.courseId}
 									setCourses={setCourses}
 									courses={courses}
+									pinned={pinned}
+									setPinned={setPinned}
+									isPin={true}
 								/>
 							))}
 
-							{!courses.length && <div className="text-grey-0">
+							{courses.map((course, idx) => (
+								<CourseBlob
+									key={idx}
+									id={idx}
+									title={course.title}
+									cover={course.cover}
+									description={course.description}
+									courseId={course.courseId}
+									setCourses={setCourses}
+									courses={courses}
+									pinned={pinned}
+									setPinned={setPinned}
+									isPin={false}
+								/>
+							))}
+
+							{!courses.length && !pinned.length && <div className="text-grey-0">
 								<p>Uh oh! Looks like you have no courses.</p>
 								<p className="mb-[2rem]">Try adding a course from the side panel.</p>
 

@@ -1,11 +1,17 @@
+import hljs from 'highlight.js/lib/core';
+import cpp from 'highlight.js/lib/languages/cpp';
+import python from 'highlight.js/lib/languages/python';
+hljs.registerLanguage('cpp', cpp);
+hljs.registerLanguage('python', python);
 import { useRouter } from "next/router";
 import Navbar from "@/components/Navbar";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import CodeEditor from "@/components/CodeEditor";
 import ProblemStatement from "@/components/ProblemStatement";
+import ProblemEditorial from "@/components/ProblemEditorial";
 import ProblemSubmissions from "@/components/ProblemSubmissions";
 import Head from "next/head";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode } from "@fortawesome/free-solid-svg-icons";
 
@@ -16,13 +22,18 @@ export default () => {
     useEffect(() => {
         if (router.query.problemId) {
             setProblemId(router.query.problemId);
-            let newlen = localStorage.getItem(router.query.problemId + "lang");
-            setLang(newlen || "cpp");
-            setVal(localStorage.getItem(router.query.problemId + newlen));
+            let newlang = localStorage.getItem(router.query.problemId + "lang") || "cpp";
+            setLang(newlang);
+            console.log(newlang);
+            console.log(localStorage.getItem(router.query.problemId + newlang));
+            setVal(localStorage.getItem(router.query.problemId + newlang));
+			setTimeout(() => hljs.highlightAll(), 500);
         }
     }, [router]);
 
-    const [showEditorial, setShowEditorial] = useState(false);
+    
+    const [problemSubmit, setProblemSubmit] = useState(false);
+    const [problemEditorial, setProblemEditorial] = useState(false);
     const [problemStatement, setProblemStatement] = useState(true);
 
     const [expanded, setExpanded] = useState(false);
@@ -32,6 +43,7 @@ export default () => {
     const [lang, setLang] = useState("cpp");
 
     const [results, setResults] = useState([]);
+    const [verdict, setVerdict] = useState(null);
 
     const handleOnChange = (newlang, newval) => {
         if (newlang != lang) {
@@ -49,6 +61,7 @@ export default () => {
             <Head>
                 <title>PZOJ</title>
                 <link rel="icon" href="/images/favicon.png" />
+                <link rel="stylesheet" href="/css/hidescroll.css"></link>
             </Head>
 
             <Navbar
@@ -61,11 +74,67 @@ export default () => {
                 ]}
             />
 
-            <main className="bg-dark-0 w-full flex flex-row justify-center items-center mt-[4.18rem]">
+            <main className="overflow-y-hidden bg-dark-0 w-full flex flex-row justify-center items-center mt-[4.18rem]">
                 <div className="max-w-[40%] w-[40%] absolute top-[4.188rem] bottom-0 left-0 min-h-[100vh]">
+                    <div className="ml-8 text-grey-1 w-full border-b border-border">
+                        <button onClick={(e) => {
+                            e.preventDefault();
+
+                            if (!problemStatement) {
+                                setProblemStatement(true);
+                                setProblemEditorial(false);
+                                setProblemSubmit(false);
+                            }
+                        }} 
+                        className={`py-[0.65rem] rounded-t cursor-pointer px-4 ${problemStatement ? "text-white-0 border-border bg-dark-3" : "transition duration-200 hover:text-white-0"}`}
+                        >
+                            Statement
+                        </button>
+                        <button 
+                            className={`py-[0.65rem] rounded-t cursor-pointer px-4 ${problemEditorial ? "text-white-0 border-border bg-dark-3" : "transition duration-200 hover:text-white-0"}`}
+                            onClick={(e) => {
+                                e.preventDefault();
+
+                                if (!problemEditorial) {
+                                    setProblemStatement(false);
+                                    setProblemEditorial(true);
+                                    setProblemSubmit(false);
+                                }
+                            }}
+                        >
+                            Editorial
+                        </button>
+                        <button 
+                            className={`py-[0.65rem] rounded-t cursor-pointer px-4 ${problemSubmit ? "text-white-0 border-border bg-dark-3" : "transition duration-200 hover:text-white-0"}`}
+                            onClick={(e) => {
+                                e.preventDefault(); 
+
+                                if (!problemSubmit) {
+                                    setProblemStatement(false);
+                                    setProblemEditorial(false);
+                                    setProblemSubmit(true);
+                                }
+                            }}
+                        >
+                            Submission
+                        </button>
+                    </div>
+
                     {problemStatement &&
                         <div>
                             <ProblemStatement pid={problemId} />
+                        </div>
+                    }
+
+                    {problemEditorial &&
+                        <div>
+                            <ProblemEditorial />
+                        </div>
+                    }
+
+                    {problemSubmit &&
+                        <div>
+                            <ProblemSubmissions verdict={verdict} data={results} pid={problemId} />
                         </div>
                     }
                 </div>
@@ -86,6 +155,12 @@ export default () => {
                         bgColor="dark-1"
                         onClick={(e) => {
                             e.preventDefault();
+                            setResults([]);
+                            results.length = 0;
+                            setProblemEditorial(false);
+                            setProblemStatement(false);
+                            setProblemSubmit(true);
+                            setVerdict(null);
                             let token = localStorage.getItem("token");
                             if (!token) {
                                 router.push("/account");
@@ -101,13 +176,23 @@ export default () => {
                                 }));
                             };
                             ws.onmessage = (msg) => {
-                                let msgStr = msg.data;
-                                if (msgStr.startsWith("error:") || msgStr.startsWith("IE")) {
+                                msg = msg.data;
+                                if (msg.startsWith("error:") || msg.startsWith("IE")) {
                                     console.error(msg);
                                     return;
                                 }
-                                setResults(results => [...results, msgStr]);
-                                results.push(msgStr);
+                                msg = msg.split(" ");
+                                msg = {
+                                    verdict: msg[0],
+                                    memory: msg[1],
+                                    time: msg[2],
+                                };
+                                if (msg.memory === undefined || msg.time === undefined) {
+                                    setVerdict(msg.verdict);
+                                    return;
+                                }
+                                results.push(msg);
+                                setResults([...results]);
                             };
                         }}
                     />

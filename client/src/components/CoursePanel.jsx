@@ -8,7 +8,7 @@ const CoursePanel = () => {
         { link: "https://www.bigocheatsheet.com/", text: "Common time complexities" },
         { link: "https://codeforces.com/blog/entry/21344", text: "Expected time complexities" },
     ]);
-    const [progress, setProgress] = useState("50%");
+    const [progress, setProgress] = useState((100 / links.length) + "%");
 
     return (
         <div className="min-w-[25rem] mt-[4.5rem] px-10 flex flex-col justify-center items-start sticky top-[6rem]">
@@ -20,12 +20,7 @@ const CoursePanel = () => {
                 </div>
             </div>
 
-            <div className="bg-dark-1 rounded px-[1.5rem] py-[1.3rem] my-[1rem] border border-border w-full">
-                <p1 className="text-grey-1 text-xl font-semibold block">Add Courses:</p1>
-                <button className="bg-transparent outline-border outline-dashed text-grey-1 text-3xl font-extrabold rounded mt-[1rem] w-full h-[5rem] transition ease-in-out duration-200 hover:bg-dark-0">+</button>
-            </div>
-
-            <div className="bg-dark-1 rounded px-[1.5rem] py-[1.3rem] border border-border w-full">
+            <div className="bg-dark-1 rounded px-[1.5rem] py-[1.3rem] mt-[1rem] border border-border w-full">
                 <p1 className="text-grey-1 text-xl font-semibold">Quick References:</p1>
                 <div className="mt-[0.6rem]">
                     {links.map((link, idx) => <>

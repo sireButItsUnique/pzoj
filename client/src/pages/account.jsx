@@ -11,6 +11,15 @@ import { faUnlockKeyhole } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 
 export default () => {
+	const [showServerError, setShowServerError] = useState(false);
+	const [showLoginError, setShowLoginError] = useState(false);
+	const [showLoginPasswordError, setShowLoginPasswordError] = useState(false);
+	const [showLoginEmptyFieldError, setShowLoginEmptyFieldError] = useState(false);
+
+	const [showRegisterPasswordMismatchError, setShowRegisterPasswordMismatchError] = useState(false);
+	const [showRegisterEmptyFieldError, setShowRegisterEmptyFieldError] = useState(false);
+	const [showRegisterUsernameTakenError, setShowRegisterUsernameTakenError] = useState(false); 
+
 	const [type, setType] = useState(true); // true = login & false = register
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
@@ -101,6 +110,54 @@ export default () => {
 								</div>
 							)}
 
+							{!type && (
+									(showRegisterEmptyFieldError || showRegisterPasswordMismatchError || showRegisterUsernameTakenError || showServerError) && (
+										<p className="text-red-500 text-sm my-[1rem] bg-dark-3 px-4 py-2 border border-border rounded">
+											<span className="font-bold text-sm mr-1">Error:</span>
+
+											{showRegisterEmptyFieldError && (
+												"Please fill in all fields."
+											)}
+
+											{showRegisterPasswordMismatchError && (
+												"Password and confirm password mismatch."
+											)}
+
+											{showRegisterUsernameTakenError && (
+												"Username has been taken."
+											)}
+
+											{showServerError && (
+												"Internal server error."
+											)}
+										</p>
+									)
+							)}
+
+							{type && (
+									(showLoginError || showLoginPasswordError || showServerError || showLoginEmptyFieldError) && (
+										<p className="text-red-500 text-sm my-[1rem] bg-dark-3 px-4 py-2 border border-border rounded">
+											<span className="font-bold text-sm mr-1">Error:</span>
+
+											{showLoginError && (
+												"Incorrect username or password."
+											)}
+
+											{showLoginPasswordError && (
+												"Incorrect password."
+											)}
+
+											{showServerError && (
+												"Internal server error."
+											)}
+
+											{showLoginEmptyFieldError && (
+												"Please fill in all fields."
+											)}
+										</p>
+									)
+							)}
+
 							<div className="m-auto text-center w-full">
 								<PrimaryButton
 									link="/"
@@ -115,9 +172,20 @@ export default () => {
 											// register
 											if (!(username && password)) {
 												// die
+
+												setShowRegisterEmptyFieldError(true);
+												setShowRegisterPasswordMismatchError(false);
+												setShowRegisterUsernameTakenError(false);
+												setShowServerError(false);
+
 												return;
 											}
 											if (confirmPassword != password) {
+												setShowRegisterEmptyFieldError(false);
+												setShowRegisterPasswordMismatchError(true);
+												setShowRegisterUsernameTakenError(false);
+												setShowServerError(false);
+
 												// die
 												return;
 											}
@@ -131,9 +199,19 @@ export default () => {
 												let code = err.response.status;
 												if (code == 409) {
 													// username taken
+													setShowRegisterEmptyFieldError(false);
+													setShowRegisterPasswordMismatchError(false);
+													setShowRegisterUsernameTakenError(true);
+													setShowServerError(false);
+
 													console.log(localStorage.getItem('token'));
 												} else if (code == 500) {
 													// server error
+
+													setShowRegisterEmptyFieldError(false);
+													setShowRegisterPasswordMismatchError(true);
+													setShowRegisterUsernameTakenError(false);
+													setShowServerError(true);
 												} else {
 													console.error(err);
 												}
@@ -142,12 +220,22 @@ export default () => {
 											// login
 											if (!(username && password)) {
 												// die
+												setShowLoginError(false);
+												setShowLoginPasswordError(false);
+												setShowServerError(false);
+												setShowLoginEmptyFieldError(true);
+
 												return;
 											}
 											axios.post('/api/login', {
 												username: username,
 												password: password,
 											}).then((res) => {
+												setShowLoginError(false);
+												setShowLoginPasswordError(false);
+												setShowServerError(false);
+												setShowLoginEmptyFieldError(false);
+
 												localStorage.setItem('token', res.data);
 												console.log("logged in");
 												window.location.href = "/problems";
@@ -155,10 +243,25 @@ export default () => {
 												let code = err.response.status;
 												if (code == 404) {
 													// user not found
+
+													setShowLoginError(true);
+													setShowLoginPasswordError(false);
+													setShowServerError(false);
+													setShowLoginEmptyFieldError(false);
 												} else if (code == 401) {
 													// wrong password
+
+													setShowLoginError(false);
+													setShowLoginPasswordError(true);
+													setShowServerError(false);
+													setShowLoginEmptyFieldError(false);
 												} else if (code == 500) {
 													// server error
+
+													setShowLoginError(false);
+													setShowLoginPasswordError(false);
+													setShowServerError(true);
+													setShowLoginEmptyFieldError(false);
 												} else {
 													console.error(err);
 												}
@@ -182,6 +285,14 @@ export default () => {
 									onClick={(e) => {
 										e.preventDefault();
 										setType((prev) => !prev);
+
+										setShowServerError(false);
+										setShowLoginError(false);
+										setShowLoginPasswordError(false);
+										setShowLoginEmptyFieldError(false);
+										setShowRegisterPasswordMismatchError(false);
+										setShowRegisterEmptyFieldError(false);
+										setShowRegisterUsernameTakenError(false);
 									}}>
 									{type ? "Register" : "Login"}
 								</Link>

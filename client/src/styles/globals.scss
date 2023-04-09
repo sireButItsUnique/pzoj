@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import "https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css";
+@import "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/base16/default-dark.min.css";
 
 $blue-0: #007bc7;
 $blue-1: #0098f7;
@@ -81,7 +82,8 @@ body {
     }
 }
 
-#problem-statement-container {
+#problem-statement-container,
+#problem-editorial-container {
     &::-webkit-scrollbar {
         width: 0.9rem;
         border-left: 1px solid $border;
@@ -99,7 +101,9 @@ body {
     }
 }
 
-#problem-statement>span {
+#problem-statement>span,
+#course>span,
+#editorial>span {
     h1 {
         font-size: 2.25rem;
         color: $white-0;
@@ -116,7 +120,7 @@ body {
     }
 
     h2 {
-        font-size: 1.3rem;
+        font-size: 1.45rem;
         font-weight: bolder;
         color: $white-0;
         margin-top: 1rem;
@@ -127,6 +131,16 @@ body {
         border-bottom: 1px solid $border;
     }
 
+    h3 {
+        font-size: 1.05rem;
+        font-weight: bold;
+        color: $white-0;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        padding-bottom: 0.5rem;
+        display: block;
+    }
+
     pre {
         margin-top: 0.3rem;
         background-color: $dark-2;
@@ -135,6 +149,25 @@ body {
         color: $grey-1;
         border-radius: 0.25rem;
         padding: 0.4rem 0.6rem;
+        code {
+            padding: 0;
+            background-color: #0000;
+        }
+    }
+
+    a {
+        color: $blue-1;
+        font-size: inherit;
+        font-weight: bold;
+    }
+
+    ul {
+        margin-left: 1.2rem;
+
+        li {
+            color: $grey-1;
+            list-style: disc;
+        }
     }
 }
 
@@ -161,6 +194,5 @@ body {
             border-radius: 0.25rem;
             border: 1px solid $border;
         }
-
     }
 }

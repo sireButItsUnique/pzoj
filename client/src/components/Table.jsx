@@ -12,7 +12,6 @@ const Table = (props) => {
 					<tr className="text-grey-1">
 						<th className="pb-3">Status</th>
 						<th className="pb-3">Problem</th>
-						<th className="pb-3">Editorial</th>
 						<th className="pb-3">Rating</th>
 						<th className="pb-3">Tag</th>
 					</tr>
@@ -33,17 +32,6 @@ const Table = (props) => {
 							>
 								{problem.problemTitle}
 							</Link>
-						</td>
-						<td className="py-3">
-							{
-								problem.editorialLink &&
-								<Link
-									href={problem.editorialLink}
-									className=""
-								>
-									<FontAwesomeIcon icon={faFile} className="w-[0.9rem] m-auto text-xl text-sky-500" />
-								</Link>
-							}
 						</td>
 						<td className="py-3">
 							<span className="text-yellow-200">{problem.rating} {<FontAwesomeIcon icon={faStar} className="text-xl w-[1.1rem] m-auto inline-block mt-[-0.3rem]" />}</span>

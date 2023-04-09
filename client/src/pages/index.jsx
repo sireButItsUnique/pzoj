@@ -3,7 +3,7 @@ import Dice from "@/components/Dice";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { OrbitControls } from "@react-three/drei";
-import { Canvas } from '@react-three/fiber';
+import { Canvas } from "@react-three/fiber";
 import { useState, useEffect } from "react";
 
 export default () => {
@@ -15,10 +15,7 @@ export default () => {
 					name="description"
 					content="Learn competitive programming and solve programming problems!"
 				/>
-				<meta
-					name="viewport"
-					content="width=device-width, initial-scale=1"
-				/>
+				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="icon" href="/images/favicon.png" />
 			</Head>
 
@@ -33,10 +30,38 @@ export default () => {
 			/>
 
 			<main className="bg-dark-0 w-full pt-[10rem] pb-[6rem]">
-				<div>
-					<h1 className="text-7xl text-grey-1 font-bold">
-						Master<br />Competitive<br />Programming.
-					</h1>
+				<div className="w-[4/5] mx-auto mt-[6rem] mb-[6rem]">
+					<div>
+						<div>
+							<h1 className="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-emerald-500 to-sky-500">
+								Master
+							</h1>
+							<h1 className="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-emerald-500 to-sky-500">
+								Competitive
+							</h1>
+							<h1 className="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-emerald-500 to-sky-500">
+								Programming
+							</h1>
+						</div>
+
+						<p className="text-grey-1 max-w-[30%] text-lg">
+							An online judge that helps you learn as you do problems. By
+							recommending problems based on what you've struggled on and areas
+							you're unfamiliar with, this is the perfect tool to get started
+							with competitive programming with. We offer built courses for all
+							skill levels, which combined with our elaborate editorials allow
+							anyone to understand a problem, even without previous knowledge.
+						</p>
+					</div>
+				</div>
+
+				<div className="absolute top-[2rem] bottom-0 right-0 left-[30vw] flex justify-center items-center">
+					<Canvas className="mb-[5rem]">
+						<OrbitControls />
+						<ambientLight args={["#ffffff", 0.5]} />
+						<directionalLight args={["#ffffff", 0.5]} position={[-3, 8, 1]} />
+						<Dice />
+					</Canvas>
 				</div>
 			</main>
 

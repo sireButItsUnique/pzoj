@@ -1,4 +1,5 @@
 @import "https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css";
+@import "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/base16/default-dark.min.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -54,21 +55,26 @@ body::-webkit-scrollbar-track {
   color: #b8b5b5;
 }
 
-#problem-statement-container::-webkit-scrollbar {
+#problem-statement-container::-webkit-scrollbar,
+#problem-editorial-container::-webkit-scrollbar {
   width: 0.9rem;
   border-left: 1px solid rgba(255, 255, 255, 0.0509803922);
 }
-#problem-statement-container::-webkit-scrollbar-thumb {
+#problem-statement-container::-webkit-scrollbar-thumb,
+#problem-editorial-container::-webkit-scrollbar-thumb {
   border: 0.3rem solid rgba(0, 0, 0, 0);
   background-clip: padding-box;
   border-radius: 9999px;
   background-color: rgba(167, 171, 174, 0.5);
 }
-#problem-statement-container::-webkit-scrollbar-track {
+#problem-statement-container::-webkit-scrollbar-track,
+#problem-editorial-container::-webkit-scrollbar-track {
   background-color: rgba(32, 44, 52, 0.5);
 }
 
-#problem-statement > span h1 {
+#problem-statement > span h1,
+#course > span h1,
+#editorial > span h1 {
   font-size: 2.25rem;
   color: #ffffff;
   font-weight: 700;
@@ -77,12 +83,16 @@ body::-webkit-scrollbar-track {
   -webkit-text-fill-color: transparent;
   margin-bottom: 1rem;
 }
-#problem-statement > span p {
+#problem-statement > span p,
+#course > span p,
+#editorial > span p {
   font-size: 1rem;
   color: #a7abae;
 }
-#problem-statement > span h2 {
-  font-size: 1.3rem;
+#problem-statement > span h2,
+#course > span h2,
+#editorial > span h2 {
+  font-size: 1.45rem;
   font-weight: bolder;
   color: #ffffff;
   margin-top: 1rem;
@@ -92,7 +102,20 @@ body::-webkit-scrollbar-track {
   width: 100%;
   border-bottom: 1px solid rgba(255, 255, 255, 0.0509803922);
 }
-#problem-statement > span pre {
+#problem-statement > span h3,
+#course > span h3,
+#editorial > span h3 {
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  display: block;
+}
+#problem-statement > span pre,
+#course > span pre,
+#editorial > span pre {
   margin-top: 0.3rem;
   background-color: #202c34;
   border: 1px solid rgba(255, 255, 255, 0.0509803922);
@@ -100,6 +123,30 @@ body::-webkit-scrollbar-track {
   color: #a7abae;
   border-radius: 0.25rem;
   padding: 0.4rem 0.6rem;
+}
+#problem-statement > span pre code,
+#course > span pre code,
+#editorial > span pre code {
+  padding: 0;
+  background-color: rgba(0, 0, 0, 0);
+}
+#problem-statement > span a,
+#course > span a,
+#editorial > span a {
+  color: #0098f7;
+  font-size: inherit;
+  font-weight: bold;
+}
+#problem-statement > span ul,
+#course > span ul,
+#editorial > span ul {
+  margin-left: 1.2rem;
+}
+#problem-statement > span ul li,
+#course > span ul li,
+#editorial > span ul li {
+  color: #a7abae;
+  list-style: disc;
 }
 
 #code-editor > div {

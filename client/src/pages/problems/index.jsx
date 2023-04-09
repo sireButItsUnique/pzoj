@@ -16,15 +16,23 @@ export default () => {
 		axios.get("/api/problems").then(async (res) => {
 			let problemList = res.data.map(async (p) => {
 				return {
-					status: Boolean(await axios.get(`/api/problem/${p.pid}/status`).data),
+					status: Boolean((await axios.get(`/api/problem/${p.pid}/status`)).data),
 					problemTitle: p.title,
 					rating: p.difficulty,
 					problemLink: `/problems/${p.pid}`,
-					editorialLink: `/api/problem/${p.pid}/editorial`,
 					tag: p.tag,
 				};
 			});
-			setProblems(await Promise.all(problemList));
+			problemList = await Promise.all(problemList);
+			problemList.sort((a, b) => {
+				if (a.rating < b.rating)
+					return -1;
+				else if (a.rating > b.rating)
+					return 1;
+				else
+					return 0;
+			});
+			setProblems(problemList);
 		}).catch((err) => {
 			console.error(err);
 		});
@@ -93,7 +101,6 @@ export default () => {
 													problemTitle: p.title,
 													rating: p.difficulty,
 													problemLink: `/problems/${p.pid}`,
-													editorialLink: `/problems/${p.pid}/editorial`,
 													tag: p.tag,
 												};
 											});
@@ -121,10 +128,6 @@ export default () => {
 									<span><FontAwesomeIcon icon={faShuffle} className="text-xl inline-block w-[1.2rem] mt-[-0.23rem] mr-0.5" /> Random</span>
 								}
 								bgColor="dark-1"
-							// onClick={(e) => {
-							// 	e.preventDefault();
-							// 	setProblems();
-							// }}
 							/>
 
 						</div>

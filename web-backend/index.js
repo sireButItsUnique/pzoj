@@ -8,12 +8,14 @@ const sqlite3 = require('sqlite3').verbose();
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const ws = require('ws');
+const cookieParser = require('cookie-parser');
 var showdown = require('showdown'),
 	converter = new showdown.Converter();
 
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 const db = new sqlite3.Database(path.join(cwd(), 'db.db'));
 
@@ -86,7 +88,7 @@ app.post('/api/login', (req, res) => {
 			// if password is correct, send back a token
 			if (result) {
 				let token = getToken(username);
-				res.cookie['token'] = token;
+				res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });
 				res.send(token);
 			} else {
 				res.status(401);
@@ -131,7 +133,7 @@ app.post('/api/register', (req, res) => {
 						return;
 					}
 					let token = getToken(username);
-					res.cookie['token'] = token;
+					res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });
 					res.send(token);
 					db.run('COMMIT');
 				});
@@ -240,7 +242,7 @@ app.get('/api/problem/:pid/status', (req, res) => {
 		res.end();
 		return;
 	}
-	db.all('SELECT * FROM submissions WHERE pid=? AND username=?', [req.params.pid, username], (err, rows) => {
+	db.all('SELECT * FROM submissions WHERE problemid=? AND username=? AND result="AC"', [req.params.pid, username], (err, rows) => {
 		if (err) {
 			console.error(err);
 			res.status(500);

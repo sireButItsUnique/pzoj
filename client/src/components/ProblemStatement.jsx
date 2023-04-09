@@ -35,7 +35,7 @@ export default (props) => {
 
 	return (
 		<>
-			<div className="w-full px-8 py-8 overflow-y-scroll max-h-[100vh]" id="problem-statement-container">
+			<div className="w-full px-8 pt-4 pb-8 overflow-y-scroll max-h-[calc(100vh-112px)]" id="problem-statement-container">
 				<div className="flex flex-row justify-start items-center">
 					<p1 className="inline-block text-grey-1">Difficulty: </p1>
 					<p1 className="inline-block text-yellow-200 mx-1">{difficulty}</p1>

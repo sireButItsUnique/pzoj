@@ -33,19 +33,19 @@ function judge(code_file, lang, dir, ws) {
 				// handle error
 				switch (code) {
 					case 2:
-						buffer = "TLE";
+						buffer = "TLE 0 0";
 						break;
 					case 3:
-						buffer = "MLE";
+						buffer = "MLE 0 0";
 						break;
 					case 5:
-						buffer = "OLE";
+						buffer = "OLE 0 0";
 						break;
 					case 6:
-						buffer = "CE";
+						buffer = "CE 0 0";
 						break;
 					case 7:
-						buffer = "RTE";
+						buffer = "RTE 0 0";
 						break;
 					default: {
 						// check for bitflags
@@ -79,8 +79,11 @@ function judge(code_file, lang, dir, ws) {
 			// chdir into dir
 			let c = cwd();
 			chdir(dir);
-			if (lang != 'py')
-				fs.rmSync(code_file);
+			if (lang != 'py') {
+				try {
+					fs.rmSync(code_file);
+				} catch {}
+			}
 			try {
 				fs.rmSync("output.txt");
 			} catch {}
