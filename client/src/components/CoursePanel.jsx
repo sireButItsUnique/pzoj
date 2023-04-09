@@ -29,7 +29,7 @@ const CoursePanel = () => {
                 <p1 className="text-grey-1 text-xl font-semibold">Quick References:</p1>
                 <div className="mt-[0.6rem]">
                     {links.map((link, idx) => <>
-                        <Link rel="noopener noreferrer" target="_blank" href={link.link} key={idx} className="block text-blue-400 transition ease-in-out duration-200 hover:text-blue-500">
+                        <Link rel="noopener noreferrer" target="_blank" href={link.link} key={idx} className="block text-blue-1 transition ease-in-out duration-200 hover:text-blue-0">
                             {link.text}
                         </Link>
                     </>

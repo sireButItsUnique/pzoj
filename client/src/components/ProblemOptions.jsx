@@ -42,7 +42,7 @@ const ProblemOptions = ({setEditorial, setExpanded, setSidePanel, setProblemStat
                 }}
             >
                 <Image src="/images/pin.png" width={24} height={24}/>
-                <p1 className="ml-[0.5rem] text-grey-2">Submissions</p1>
+                <p1 className="ml-[0.5rem] text-grey-2">Run/Submissions</p1>
             </button>
 
             <button 

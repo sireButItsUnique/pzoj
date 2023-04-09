@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import CodeEditor from "@/components/Editor";
 import ProblemStatement from "@/components/ProblemStatement";
+import ProblemSubmissions from "@/components/ProblemSubmissions";
 import ProblemOptions from "@/components/ProblemOptions";
 import Head from "next/head";
 import Image from "next/image";

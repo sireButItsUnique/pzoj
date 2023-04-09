@@ -4,7 +4,7 @@ import Table from "@/components/Table";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import Footer from "@/components/Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShuffle, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faShuffle, faSearch, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 //asd
 export default () => {
@@ -64,7 +64,21 @@ export default () => {
 							<div className="text-grey-1 bg-dark-2 px-4 py-2 border border-border flex flex-row justify-center items-center rounded-lg">
 								<FontAwesomeIcon icon={faSearch} className="text-xl inline-block w-[1.2rem] mr-4" />
 
-								<input type="text" className="outline-none bg-dark-2" placeholder="Search for problem" />
+								<input type="text" className="outline-none bg-dark-2 mr-4 w-[12rem]" placeholder="Search for problem" />
+
+								<PrimaryButton
+									link="/problems"
+									text={
+										<span>
+											<FontAwesomeIcon icon={faArrowRight} className="inline-block text-xl mt-[-0.23rem] w-[1rem] mr-0.5" /> Go
+										</span>
+									}
+									target="_self"
+									bgColor="dark-2"
+									onClick={(e) => {
+										e.preventDefault();
+									}}
+								/>
 							</div>
 						</div>
 
