@@ -9,6 +9,7 @@ client/build/
 */yarn-error.log*
 */.pnpm-debug.log*
 db.db
-./problems
+problems/
+!client/src/pages/problems/
 judge
 key.key

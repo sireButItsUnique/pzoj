@@ -11,8 +11,11 @@ export default () => {
 		setInterval(() => {
 			const list = [
 				"Dynamic Programming.", "Tree Algorithms.", "Graph Theory.", "Binary Search.", "Heaps.", "Dijkstra's Algorithm.",
-				"Priority Queues.", "Sparse Tables.", "Segmentation Trees.", "Greedy Algorithms.", "Bellmen Ford Algorithm.",
-				"Max Flow.", "Two Pointers System.", "Sliding Window.", "Kruskal's Algorithm.", "Tabulation."
+				"Priority Queues.", "Sparse Tables.", "Segment Trees.", "Greedy Algorithms.", "Bellman-Ford Algorithm.", "Max Flow.",
+				"Two Pointers System.", "Sliding Window.", "Kruskal's Algorithm.", "Tabulation.", "Square Root Decomposition.",
+				"Binary Indexed Tree.", "Trie.", "Disjoint Set Union.", "Breadth First Search.", "Depth First Search.", "Convex Hull.",
+				"Sieve of Eratosthenes.", "Fast Fourier Transform.", "Z-Algorithm.", "Kosaraju's Algorithm.", "Longest Common Subsequence.",
+				"Backtracking.", "Complex Analysis.", "Modular Arithmetic.", "Number Theory.", "Divide and Conquer.", "Ternary Search.",
 			];
 			setRandom(list[Math.floor(Math.random() * 16)]);
 		}, 1000);

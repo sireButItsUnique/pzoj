@@ -60,25 +60,10 @@ export default () => {
 
 					<div className="min-w-[25rem] mt-[4.5rem] px-10 flex flex-col justify-center items-start sticky top-[6rem]">
 						<div className="bg-dark-1 rounded px-[1.5rem] py-[1.5rem] border border-border w-full mb-[1rem]">
-							<h2 className="text-grey-1 text-xl font-semibold mb-[1rem]">Find Problem:</h2>
+							<h2 className="text-grey-1 text-xl font-semibold mb-[1rem]">Find a Problem:</h2>
 							<div className="text-grey-1 bg-dark-2 px-4 py-2 border border-border flex flex-row justify-center items-center rounded-lg">
 								<FontAwesomeIcon icon={faSearch} className="text-xl inline-block w-[1.2rem] mr-4" />
-
-								<input type="text" className="outline-none bg-dark-2 mr-4 w-[12rem]" placeholder="Search for problem" />
-
-								<PrimaryButton
-									link="/problems"
-									text={
-										<span>
-											<FontAwesomeIcon icon={faArrowRight} className="inline-block text-xl mt-[-0.23rem] w-[1rem] mr-0.5" /> Go
-										</span>
-									}
-									target="_self"
-									bgColor="dark-2"
-									onClick={(e) => {
-										e.preventDefault();
-									}}
-								/>
+								<input type="text" className="outline-none bg-dark-2" placeholder="Search for a problem" />
 							</div>
 						</div>
 
@@ -89,7 +74,7 @@ export default () => {
 								link="/"
 								target="_self"
 								text={
-									<span><FontAwesomeIcon icon={faShuffle} className="text-xl inline-block w-[1.2rem] mt-[-0.23rem] mr-0.5" /> Random</span>
+									<span><FontAwesomeIcon icon={faShuffle} className="text-xl float-right inline-block w-[1.2rem] mt-[-0.23rem] ml-0.5" /> Random</span>
 								}
 								bgColor="dark-1"
 							/>
