@@ -123,6 +123,10 @@ export default () => {
 
 							<PrimaryButton
 								link="/api/problems/random"
+								onClick={(e) => {
+									e.preventDefault();
+									window.open("/api/problems/random");
+								}}
 								target="_self"
 								text={
 									<span><FontAwesomeIcon icon={faShuffle} className="text-xl inline-block w-[1.2rem] mt-[-0.23rem] mr-0.5" /> Random</span>

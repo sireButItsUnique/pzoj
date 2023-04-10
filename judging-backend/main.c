@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 		pid_t pid = fork();
 		if (pid == 0) {
 			// child process
-			execl("/usr/bin/g++", "/usr/bin/g++", "main.cpp"/*, "-std=c++20"*/, NULL);
+			execl("/usr/bin/g++", "/usr/bin/g++", "main.cpp", "-std=c++20", NULL);
 		} else if (pid > 0) {
 			// parent process
 			int status;

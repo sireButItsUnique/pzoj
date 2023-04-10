@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 export default () => {
 	const [courses, setCourses] = useState([]);
 	const [pinned, setPinned] = useState([]);
+	const [done, setDone] = useState(0);
 
 	useEffect(() => {
 		axios.get("/api/courses").then(async (res) => {
@@ -87,6 +88,8 @@ export default () => {
 									pinned={pinned}
 									setPinned={setPinned}
 									isPin={true}
+									done={done} 
+									setDone={setDone}
 								/>
 							))}
 
@@ -103,6 +106,8 @@ export default () => {
 									pinned={pinned}
 									setPinned={setPinned}
 									isPin={false}
+									done={done} 
+									setDone={setDone}
 								/>
 							))}
 
@@ -114,7 +119,7 @@ export default () => {
 							</div>}
 						</div>
 
-						<CoursePanel />
+						<CoursePanel done={done} setDone={setDone}/>
 					</div>
 				</div>
 			</main>

@@ -5,6 +5,12 @@ const CourseOptions = (props) => {
 			<button
 				className="flex transition duration-200 hover:bg-dark-2 pl-[0.5rem] pr-[1rem] pb-[0.25rem] pt-[0.25rem]"
 				onClick={() => {
+					if (props.completed) {
+						props.setDone(props.done - 1);
+					} else {
+						props.setDone(props.done + 1);
+					}
+					
 					props.setCompleted(!props.completed);
 					props.setExpanded(false);
 				}}>

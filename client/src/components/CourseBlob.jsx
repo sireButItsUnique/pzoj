@@ -42,6 +42,8 @@ const CourseBlob = (props) => {
 					key={props.key}
 					id={props.id}
 					isPin={props.isPin}
+					done={props.done} 
+					setDone={props.setDone}
 				/>
 			)}
 			{expanded && (

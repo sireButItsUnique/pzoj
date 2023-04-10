@@ -38,8 +38,10 @@ const ProblemSubmissions = (props) => {
                     }
                     {props.verdict ? (
                         <>
-                            <tr className="text-2xl w-full text-center text-grey-1"></tr>
-                            <tr className="text-2xl w-full text-center text-grey-1"></tr>
+                            <tr className="text-2xl w-full text-center text-grey-1"><td>&nbsp;</td></tr>
+                            <tr className="text-2xl w-full text-center text-grey-1">
+                                <td className="py-3">Verdict: <span className={`py-3 ${props.verdict == "AC" ? "text-emerald-400" : "text-red-500"}`}>{props.verdict}</span></td>
+                            </tr>
                         </>
                     ) : null}
                 </tbody>
