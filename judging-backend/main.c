@@ -16,6 +16,7 @@
 #include <signal.h>
 
 #include "syscalls.h"
+#include "checkers.h"
 
 #define AC 0
 #define WA 1
@@ -52,6 +53,9 @@ char *cleanse_string(char *str, int len) {
 long long min(long long a, long long b) {
 	return a < b ? a : b;
 }
+
+typedef int (*func_ptr)(char *, char *);
+func_ptr check;
 
 int main(int argc, char *argv[]) {
 	// argv[1] is the language that the program is written in
@@ -143,8 +147,18 @@ int main(int argc, char *argv[]) {
 	}
 
 	int time_limit, memory_limit; // time limit in seconds, memory limit in MB
-	if (fscanf(init, "%d %d", &time_limit, &memory_limit) != 2) {
-		fprintf(stderr, "failed to read judge file\n");
+	char checker[32];
+	if (fscanf(init, "%d %d %s", &time_limit, &memory_limit, checker) != 3) {
+		fprintf(stderr, "corrupted judge file\n");
+		return IE;
+	}
+
+	if (strcmp(checker, "identical") == 0) {
+		check = &strcmp;
+	} else if (strcmp(checker, "default") == 0) {
+		check = &default_checker;
+	} else {
+		fprintf(stderr, "unknown checker\n");
 		return IE;
 	}
 
@@ -225,7 +239,7 @@ int main(int argc, char *argv[]) {
 					char *tptr2 = cleanse_string(ptr2, ftell(f));
 					munmap(ptr2, 0x1000000);
 					fclose(f);
-					if (strcmp(tptr1, tptr2) != 0) {
+					if (!(*check)(tptr1, tptr2)) {
 						printf(" WA\n");
 						return WA;
 					}
